@@ -47,11 +47,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `reservation_cafet`.`sandwichs`
+-- Table `reservation_cafet`.`sandwiches`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `reservation_cafet`.`sandwichs` ;
+DROP TABLE IF EXISTS `reservation_cafet`.`sandwiches` ;
 
-CREATE TABLE IF NOT EXISTS `reservation_cafet`.`sandwichs` (
+CREATE TABLE IF NOT EXISTS `reservation_cafet`.`sandwiches` (
   `sandwich_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `default_quota` INT UNSIGNED NOT NULL,
@@ -71,14 +71,14 @@ CREATE TABLE IF NOT EXISTS `reservation_cafet`.`day_has_sandwiches` (
   `quota` INT UNSIGNED NOT NULL,
   `is_removed` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`day_id`, `sandwich_id`),
-  INDEX `fk_sandwichs_has_days_days1_idx` (`day_id` ASC),
-  INDEX `fk_sandwichs_has_days_sandwichs_idx` (`sandwich_id` ASC),
-  CONSTRAINT `fk_sandwichs_has_days_sandwichs`
+  INDEX `fk_sandwiches_has_days_days1_idx` (`day_id` ASC),
+  INDEX `fk_sandwiches_has_days_sandwiches_idx` (`sandwich_id` ASC),
+  CONSTRAINT `fk_sandwiches_has_days_sandwiches`
     FOREIGN KEY (`sandwich_id`)
-    REFERENCES `reservation_cafet`.`sandwichs` (`sandwich_id`)
+    REFERENCES `reservation_cafet`.`sandwiches` (`sandwich_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_sandwichs_has_days_days1`
+  CONSTRAINT `fk_sandwiches_has_days_days1`
     FOREIGN KEY (`day_id`)
     REFERENCES `reservation_cafet`.`days` (`day_id`)
     ON DELETE NO ACTION

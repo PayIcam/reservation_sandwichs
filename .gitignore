@@ -1,1 +1,8 @@
 config.php
+iconic/*
+!iconic/font
+iconic/font/*
+!iconic/font/css/
+iconic/font/css/*
+!iconic/font/css/open-iconic.css
+js/bootstrap/*

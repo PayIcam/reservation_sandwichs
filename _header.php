@@ -1,14 +1,10 @@
 <?php
 
-require 'config.php';
+require 'class/DB.php';
+require 'class/Sandwich.php';
+require 'class/Config.php';
+require 'class/Day.php';
 
-function connect_to_db($conf) {
-    try {
-        $db = new PDO('mysql:host='.$conf['sql_host'].';dbname='.$conf['sql_db'].';charset=utf8',$conf['sql_user'],$conf['sql_pass'],array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION ));
-        return $db;
-    } catch(Exeption $e) {
-        die('erreur:'.$e->getMessage());
-    }
-}
+$_CONFIG = require 'config.php';
 
-$db = connect_to_db($_CONFIG['database_connection']);
+$db = new DB($_CONFIG['database']['sql_host'], $_CONFIG['database']['sql_db'], $_CONFIG['database']['sql_login'], $_CONFIG['database']['sql_pass']);
