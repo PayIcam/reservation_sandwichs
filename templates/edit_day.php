@@ -41,7 +41,7 @@
                 <?php foreach($day_sandwiches as $sandwich) {?>
                     <tr data-sandwich_id="<?=$sandwich['sandwich_id']?>">
                         <td class="text-center"><?=$sandwich['name']?></td>
-                        <td class="text-center"><span class="quota"><?=$sandwich['quota'] ?? $sandwich['default_quota']?></span> <button type="button" class="edit_quota btn btn-primary"><span class="oi oi-pencil"></span></button></td>
+                        <td class="text-center"><span class="quota"><?=$sandwich['quota'] ?? $sandwich['default_quota']?></span> <button type="button" class="edit_quota btn btn-primary btn-sm"><span class="oi oi-pencil"></span></button></td>
                         <td class="text-center"><button class="btn btn-danger delete" type="button">Supprimer le sandwich</button></td>
                     </tr>
                 <?php } ?>
@@ -50,4 +50,5 @@
         <button class="btn btn-primary" type="submit">Envoyer</button>
     </form>
 </div>
+<script src="js/basic.js"></script>
 <script src="js/edit_day.js"></script>

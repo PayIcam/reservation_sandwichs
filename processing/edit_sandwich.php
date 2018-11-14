@@ -29,10 +29,11 @@ if(!empty($_POST)) {
                 "description" => htmlspecialchars($_POST['description'])
             ];
 
-        	if(!Sandwich::insert($sandwich)) {
-        		echo "Il y a eu une erreur lors de l'insertion";
-        	} else {
-                header('Location: ../admin_sandwichs.php');
+        	try {
+                Sandwich::insert($sandwich);
+                header('Location: ../admin_general_settings.php');
+            } catch(Exception $e) {
+                echo "Il y a eu une erreur lors de l'insertion";
         	}
         }
 

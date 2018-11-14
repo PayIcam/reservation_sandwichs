@@ -25,11 +25,11 @@ $(document).ready(function() {
     function change_quota() {
         quota = $(this).prev('span').text();
         input = '<input type="number" class="form-control" value="' + quota + '">'
-        button = '<button type="button" class="btn btn-primary"><span class="oi oi-check"></span></button>'
+        button = '<button type="button" class="btn btn-primary btn-sm"><span class="oi oi-check"></span></button>'
         cell = $(this).parent().html(input + button);
         cell.children('button').click(function() {
             quota = '<span class="quota">' +  $(this).prev('input').val() + '</span>';
-            button = ' <button type="button" class="btn btn-primary edit_quota"><span class="oi oi-pencil"></span></button>'
+            button = ' <button type="button" class="btn btn-primary btn-sm edit_quota"><span class="oi oi-pencil"></span></button>'
             cell = $(this).parent().html(quota + button);
             cell.children('button').click(change_quota);
         });

@@ -12,7 +12,7 @@ if(!empty($_POST)) {
         ];
 
         Config::update($config);
-        header('Location: ../edit_config.php');
+        header('Location: ../admin_general_settings.php');
     } else {
         echo "Les bonnes données n'ont pas été transmises";
     }

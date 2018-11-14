@@ -1,0 +1,11 @@
+{
+    "name": "payicam/reservation_sandwichs",
+    "description": "Réservation de sandwichs",
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "classmap": ["vendor/payutc-json-client/jsonclient/"],
+        "psr-0": { "CoreHelpers": "src", "": "src"}
+    }
+}
