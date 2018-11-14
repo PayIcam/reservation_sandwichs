@@ -35,7 +35,6 @@ $icam_informations = null;
 if(!in_array($route, ['login.php', 'callback.php'])) {
     if((!isset($status) || !$status->user))// Il n'était pas encore connecté en tant qu'icam.
     {
-        // var_dump('no status');die();
         header('Location:'.$casUrl, true, 303); die();
     }
     if (!empty($status->user)) {

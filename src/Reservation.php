@@ -21,6 +21,22 @@ class Reservation {
         $this->bind($db->queryFirst('SELECT * FROM reservations WHERE reservation_id = :reservation_id', array('reservation_id' => $reservation_id)));
     }
 
+    public static function get_day_stats() {
+        global $db;
+        $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.* FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) ORDER BY day');
+        foreach($days_stats as &$day_stats) {
+            $sandwiches_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, s.sandwich_id, CASE WHEN dhs.quota IS NOT NULL THEN dhs.quota ELSE s.default_quota END quota
+                FROM reservations r
+                LEFT JOIN day_has_sandwiches dhs ON dhs.day_id=r.day_id AND dhs.sandwich_id=r.sandwich_id
+                RIGHT JOIN sandwiches s ON dhs.sandwich_id=s.sandwich_id
+                WHERE r.day_id=:day_id and status IN ("V","W")
+                GROUP BY s.sandwich_id, CASE WHEN dhs.quota IS NOT NULL THEN dhs.quota ELSE s.default_quota END',
+                array('day_id' => $day_stats['day_id']));
+            $day_stats['sandwiches_stats'] = $sandwiches_stats;
+        }
+        return $days_stats;
+    }
+
     public static function get_all($day_id=false, $status=false) {
         global $db;
         if($day_id !== false) {

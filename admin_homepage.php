@@ -1,13 +1,27 @@
 <?php
 
-// require '_header.php';
+require '_header.php';
 
-// $sandwiches = Sandwich::get_all();
-// $config = new Config();
+$days_stats = Reservation::get_day_stats();
+$sandwiches = Sandwich::get_all();
+$sandwiches_ids = array_column($sandwiches, 'sandwich_id');
 
-// require 'templates/header.php';
-// require 'templates/edit_config.php';
-// require 'templates/sandwich_list.php';
-// require 'templates/edit_sandwich.php';
+function sorting($a, $b){
+    return $a['sandwich_id'] <= $b['sandwich_id'] ? -1:1;
+}
+
+foreach($days_stats as &$day_stats) {
+    $sandwiches_ids_stats = array_column($day_stats['sandwiches_stats'], 'sandwich_id');
+    $difference_ids = array_diff($sandwiches_ids, $sandwiches_ids_stats);
+    foreach($difference_ids as $id) {
+        $array = ['reservations' => 0, 'pendings' => 0, 'picked_ups' => 0, 'sandwich_id' => $id, 'quota' => 0];
+        array_push($day_stats['sandwiches_stats'], $array);
+    }
+
+    usort($day_stats['sandwiches_stats'], 'sorting');
+}
+
+require 'templates/header.php';
+require 'templates/admin_homepage.php';
 
 ?>
