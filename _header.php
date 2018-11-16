@@ -40,10 +40,10 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
     }
     if (!empty($status->user)) {
         try {
+            $is_in_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php']);
             $has_admin_rights = \CoreHelpers\Auth::has_admin_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient');
             $fundations = $payutcClient->getFundations();
             $has_cafet_rights = in_array($_CONFIG['cafet_fun_id'], array_column($fundations, 'fun_id'));
-            $is_in_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php']);
             if(!$has_cafet_rights) {
                 if($is_in_admin_page) {
                     header('Location: '.$_CONFIG['public_url']);
