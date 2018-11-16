@@ -23,7 +23,7 @@ class Reservation {
 
     public static function get_days_stats() {
         global $db;
-        $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.* FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) ORDER BY day');
+        $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.* FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) UNION SELECT 0 reservations, 0 pendings, 0 picked_ups, date(d.pickup_date) day, d.* FROM days d LEFT JOIN reservations r ON r.day_id=d.day_id WHERE status NOT IN ("V", "W") OR status IS NULL ORDER BY day');
         foreach($days_stats as &$day_stats) {
             $sandwiches_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, s.sandwich_id, CASE WHEN dhs.quota IS NOT NULL THEN dhs.quota ELSE s.default_quota END quota
                 FROM reservations r

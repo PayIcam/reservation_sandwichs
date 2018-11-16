@@ -1,5 +1,5 @@
 <div class="container">
-	<h1 class="text-center"><?= isset($sandwich) ? "Editer le sandwich" : "Ajouter un sandwich" ?></h1>
+	<h1 class="text-center"><?= isset($sandwichh) ? "Editer le sandwich" : "Ajouter un sandwich" ?></h1>
 	<form method='POST' action="processing/edit_sandwich.php">
         <input type="hidden" name="sandwich_id" value="<?=$_GET['sandwich_id'] ?? ""?>">
 		<div class="form-group">
