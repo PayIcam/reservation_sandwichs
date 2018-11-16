@@ -11,7 +11,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach($days as $day) { ?>
+            <?php setlocale(LC_TIME, "fr_FR"); foreach($days as $day) { ?>
             <tr>
                 <th><?=strftime("%A %e %B %Y", strtotime($day['day']))?></th>
                 <td><?= !empty($day['reservation']) ? Reservation::display_reservation_name($day['reservation']['reservation_id']) : ""?></td>

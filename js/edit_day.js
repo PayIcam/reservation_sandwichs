@@ -35,11 +35,18 @@ $(document).ready(function() {
         });
     }
 
-    $('#sandwich_table .delete').click(function() {
-        if(window.confirm("Voulez vous vraiment supprimer ce sandwich ?")) {
-            $(this).parents('tr').remove();
-        }
-    });
+    function delete_sandwich() {
+        $(this).removeClass('btn-danger').removeClass('delete').addClass('btn-success').addClass('restore').text('Restaurer le sandwich').parents('tr').removeClass('displayed').addClass('deleted');
+        $(this).off('click').click(restore);
+    }
+    function restore() {
+        console.log('ah');
+        $(this).removeClass('btn-success').removeClass('restore').addClass('btn-danger').addClass('delete').text('Supprimer le sandwich').parents('tr').removeClass('deleted').addClass('displayed');
+        $(this).off('click').click(delete_sandwich);
+    }
+
+    $('.delete').click(delete_sandwich);
+    $('.restore').click(restore);
 
     // <td class="text-center"><?=$sandwich['default_quota']?> <button type="button" class="edit_quota btn btn-primary"><span class="oi oi-pencil text-right"></span></button></td>
 
@@ -47,7 +54,7 @@ $(document).ready(function() {
 
     $('form').submit(function(submit) {
         var sandwiches = [];
-        $('#sandwich_table tbody tr').each(function() {
+        $('#sandwich_table tbody .displayed').each(function() {
             var sandwich = {sandwich_id: $(this).data('sandwich_id'), quota: $(this).find('.quota').text()}
             sandwiches.push(sandwich);
         });

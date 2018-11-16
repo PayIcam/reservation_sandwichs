@@ -7,10 +7,11 @@ class Day {
     public $reservation_closure_date;
     public $pickup_date;
     public $is_removed;
+    public $day;
 
     public function __construct($day_id) {
         global $db;
-        $this->bind($db->queryFirst('SELECT * FROM days WHERE day_id = :day_id', array('day_id' => $day_id)));
+        $this->bind($db->queryFirst('SELECT *, date(pickup_date) day FROM days WHERE day_id = :day_id', array('day_id' => $day_id)));
     }
 
     public static function get_all($days_number, $week_too=false, $removed_too=false) {
@@ -40,7 +41,7 @@ class Day {
 
     public function get_day_sandwiches() {
         global $db;
-        return $db->query('SELECT dhs.quota, dhs.sandwich_id, s.name FROM day_has_sandwiches dhs LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE dhs.is_removed=0 and day_id=:day_id', array("day_id" => $this->day_id));
+        return $db->query('SELECT dhs.quota, s.sandwich_id, s.name, dhs.is_removed FROM day_has_sandwiches dhs LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE day_id=:day_id UNION SELECT default_quota quota, sandwich_id, name, 1 FROM sandwiches WHERE sandwich_id NOT IN (SELECT sandwich_id FROM day_has_sandwiches WHERE day_id=:day_id)', array("day_id" => $this->day_id));
     }
 
     public static function insert($day, $day_sandwiches) {
@@ -69,7 +70,6 @@ class Day {
         foreach($deleted_sandwich_ids as $sandwich_id) {
             $db->query('UPDATE day_has_sandwiches SET is_removed=1 WHERE day_id=:day_id and sandwich_id=:sandwich_id', array("day_id" => $day['day_id'], "sandwich_id" => $sandwich_id));
         }
-        // $db->query('')
     }
 
     public static function can_book_sandwiches($day) {
@@ -80,6 +80,11 @@ class Day {
         return strtotime($day['reservation_closure_date']) - time() > 0 ;
     }
 
+    public static function already_created($pickup_date) {
+        global $db;
+        return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date))['already_created'];
+    }
+
     protected function bind($day) {
         $this->day_id = $day['day_id'];
         $this->quota = $day['quota'];
@@ -87,12 +92,13 @@ class Day {
         $this->reservation_closure_date = date('m/d/Y h:i a', strtotime($day['reservation_closure_date']));
         $this->pickup_date = date('m/d/Y h:i a', strtotime($day['pickup_date']));
         $this->is_removed = $day['is_removed'];
+        $this->day = $day['day'];
     }
 
     public static function display_action_button($day, $possibilities) {
         if(empty($day['reservation'])) {
             if(!self::can_book_sandwiches($day)) { ?>
-                <button type="button" class="btn btn-primary button_disabled" disabled title='Quota déjà rempli :('>Réserver un sandwich</button>
+                <button type="button" class="btn btn-primary button_disabled" disabled title='Quota déjà rempli ou date passée'>Réserver un sandwich</button>
             <?php } else { ?>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal<?=$day['day_id']?>">
                     Réserver un sandwich

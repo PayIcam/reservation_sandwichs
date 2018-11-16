@@ -12,10 +12,12 @@ class Sandwich {
         $this->bind($db->queryFirst('SELECT * FROM sandwiches WHERE sandwich_id = :sandwich_id', array('sandwich_id' => $sandwich_id)));
     }
 
-    public static function get_all($removed_too=true) {
+    public static function get_all($removed_too=true, $booked=false) {
         global $db;
-        if($removed_too) {
+        if($removed_too && !$booked) {
             $sandwiches = $db->query('SELECT * FROM sandwiches');
+        } elseif($booked) {
+            $sandwiches = $db->query('SELECT DISTINCT s.* FROM sandwiches s LEFT JOIN reservations r ON r.sandwich_id=s.sandwich_id LEFT JOIN days d ON r.day_id=d.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) ORDER BY sandwich_id');
         } else {
             $sandwiches = $db->query('SELECT * FROM sandwiches WHERE is_removed=0');
         }

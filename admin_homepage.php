@@ -2,8 +2,8 @@
 
 require '_header.php';
 
-$days_stats = Reservation::get_day_stats();
-$sandwiches = Sandwich::get_all();
+$days_stats = Reservation::get_days_stats();
+$sandwiches = Sandwich::get_all(true, true);
 $sandwiches_ids = array_column($sandwiches, 'sandwich_id');
 
 function sorting($a, $b){

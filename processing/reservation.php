@@ -25,7 +25,6 @@ if(!empty($_GET)) {
         $reservation_id = Reservation::insert($insert_array);
 
         echo json_encode(array("message" => "Sandwich commandé !", "url" => $payicam_reservation->url));
-        // echo $sandwich->toggle();
     } else {
         echo json_encode(array('message' => "Les bonnes données n'ont pas été transmises"));
     }

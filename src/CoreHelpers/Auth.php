@@ -194,4 +194,15 @@ class Auth{
         $role = $this->getRole($id);
         return $role['name'];
     }
+
+    public static function has_admin_rights($fundation_id, $getPayutcClient) {
+        $payutc_admin = $getPayutcClient('ADMINRIGHT');
+        try {
+            $admin_fundations = $payutc_admin->getFundations();
+            $admin_fundation_ids = array_column($admin_fundations, 'fun_id');
+            return in_array($fundation_id, $admin_fundation_ids);
+        } catch(JsonClient\JsonException $e) {
+            return false;
+        }
+    }
 }

@@ -33,11 +33,29 @@ $logoutUrl = $_CONFIG['cas_url']."logout?service=".urlencode($_CONFIG['public_ur
 $icam_informations = null;
 
 if(!in_array($route, ['login.php', 'callback.php'])) {
+
     if((!isset($status) || !$status->user))// Il n'était pas encore connecté en tant qu'icam.
     {
         header('Location:'.$casUrl, true, 303); die();
     }
     if (!empty($status->user)) {
+        try {
+            $has_admin_rights = \CoreHelpers\Auth::has_admin_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient');
+            $fundations = $payutcClient->getFundations();
+            $has_cafet_rights = in_array($_CONFIG['cafet_fun_id'], array_column($fundations, 'fun_id'));
+            $is_in_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php']);
+            if(!$has_cafet_rights) {
+                if($is_in_admin_page) {
+                    header('Location: '.$_CONFIG['public_url']);
+                    die();
+                }
+            }
+        } catch(JsonClient\JsonException $e) {
+            if($is_in_admin_page) {
+                header('Location: '.$_CONFIG['public_url']);
+                die();
+            }
+        }
         if (empty($status->application) || isset($status->application->app_url) && strpos($status->application->app_url, 'bar_trader') === false)// il était connecté en tant qu'icam mais l'appli non
         {
             try {
@@ -56,3 +74,4 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
 }
 
 $db = new DB($_CONFIG['database']['sql_host'], $_CONFIG['database']['sql_db'], $_CONFIG['database']['sql_login'], $_CONFIG['database']['sql_pass']);
+

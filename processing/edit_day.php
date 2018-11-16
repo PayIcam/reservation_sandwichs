@@ -13,6 +13,10 @@ if(!empty($_POST)) {
             echo 'Les dates ne sont pas logiques';
             die();
         }
+        if(Day::already_created($pickup_date)) {
+            echo 'Le jour existe déjà...';
+            die();
+        }
 
         if(empty($_POST['day_id'])) {
             $day = [

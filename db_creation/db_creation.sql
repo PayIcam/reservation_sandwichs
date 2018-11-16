@@ -112,6 +112,8 @@ CREATE TABLE IF NOT EXISTS `reservation_cafet`.`reservations` (
   `email` VARCHAR(255) NOT NULL,
   `promo` VARCHAR(45) NOT NULL,
   `status` ENUM('A', 'V', 'W') NOT NULL DEFAULT 'W',
+  `payicam_transaction_id` INT UNSIGNED NOT NULL,
+  `payicam_transaction_url` TEXT NOT NULL,
   `reservation_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `payment_date` DATETIME NULL DEFAULT NULL,
   `pickup_date` DATETIME NULL DEFAULT NULL,

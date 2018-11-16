@@ -21,7 +21,7 @@ class Reservation {
         $this->bind($db->queryFirst('SELECT * FROM reservations WHERE reservation_id = :reservation_id', array('reservation_id' => $reservation_id)));
     }
 
-    public static function get_day_stats() {
+    public static function get_days_stats() {
         global $db;
         $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.* FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) ORDER BY day');
         foreach($days_stats as &$day_stats) {
@@ -37,12 +37,19 @@ class Reservation {
         return $days_stats;
     }
 
+    public static function get_choices_stats($day_id) {
+        global $db;
+        return $db->query('SELECT s.name sandwich, p.name possibility, COUNT(*) reservations , SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups FROM reservations r LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id WHERE status="V" and r.day_id=:day_id GROUP BY s.name, p.name', array('day_id' => $day_id));
+    }
+
     public static function get_all($day_id=false, $status=false) {
         global $db;
-        if($day_id !== false) {
-            return $db->query('SELECT * FROM reservations WHERE day_id=:day_id', array('day_id' => $day_id));
-        } elseif($status !== false) {
-            return $db->query('SELECT * FROM reservations WHERE status=:status', array('status' => $status));
+        if($day_id !== false && $status === false) {
+            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE day_id=:day_id', array('day_id' => $day_id));
+        } elseif($day_id !== false && $status !== false) {
+            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE day_id=:day_id and status=:status', array('day_id' => $day_id, 'status' => $status));
+        }elseif($status !== false) {
+            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE status=:status', array('status' => $status));
         }
     }
 
@@ -62,10 +69,25 @@ class Reservation {
         global $db;
         $db->query('UPDATE reservations SET status=:status, payment_date=CURRENT_TIMESTAMP() WHERE reservation_id=:reservation_id', array("reservation_id" => $reservation_id, "status" => $status));
     }
-    public static function pickup_sandwich($reservation_id) {
+    public function pickup_sandwich() {
         global $db;
-        $db->query('UPDATE reservations SET pickup_date=CURRENT_TIMESTAMP() WHERE reservation_id=:reservation_id', array("reservation_id" => $reservation_id));
+        $db->query('UPDATE reservations SET pickup_date=CURRENT_TIMESTAMP() WHERE reservation_id=:reservation_id', array("reservation_id" => $this->reservation_id));
+        return json_encode(array('message' => 'Tout a bien fonctionné'));
     }
+    public function unpickup_sandwich() {
+        global $db;
+        $db->query('UPDATE reservations SET pickup_date=NULL WHERE reservation_id=:reservation_id', array("reservation_id" => $this->reservation_id));
+        return json_encode(array('message' => 'Tout a bien fonctionné'));
+    }
+
+    public function toggle() {
+        if(empty($this->pickup_date)) {
+            return $this->pickup_sandwich();
+        } else {
+            return $this->unpickup_sandwich();
+        }
+    }
+
 
     public static function make_transaction($possibility_id) {
         global $payutcClient, $_CONFIG;
@@ -95,6 +117,14 @@ class Reservation {
         $names = $db->queryFirst('SELECT s.name sandwich, p.name choice FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id = r.possibility_id WHERE reservation_id=:reservation_id', array('reservation_id' => $reservation_id));
 
         return $names['choice'] . ' ' . $names['sandwich'];
+    }
+
+    public static function display_pickup_button($reservation) {
+        if(empty($reservation['pickup_date'])) { ?>
+            <button data-reservation_id="<?=$reservation['reservation_id']?>" class="btn btn-success pickup"><span class="oi oi-check"></span></button>
+        <?php } else { ?>
+            <button data-reservation_id="<?=$reservation['reservation_id']?>" class="btn btn-danger unpickup"><span class="oi oi-x"></span></button>
+        <?php }
     }
 
     protected function bind($reservation) {
