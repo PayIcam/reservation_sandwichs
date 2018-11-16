@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `reservation_cafet`.`sandwiches` (
   `sandwich_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `default_quota` INT UNSIGNED NOT NULL,
+  `description` TEXT NOT NULL,
   `is_removed` TINYINT(1) UNSIGNED NOT NULL,
   PRIMARY KEY (`sandwich_id`))
 ENGINE = InnoDB;
@@ -95,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `reservation_cafet`.`purchases_possibilities` (
   `possibility_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `article_id` INT UNSIGNED NOT NULL,
+  `description` TEXT NOT NULL,
   `is_removed` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`possibility_id`))
 ENGINE = InnoDB;

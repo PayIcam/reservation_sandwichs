@@ -13,12 +13,12 @@ if(!empty($_POST)) {
             echo 'Les dates ne sont pas logiques';
             die();
         }
-        if(Day::already_created($pickup_date)) {
-            echo 'Le jour existe déjà...';
-            die();
-        }
 
         if(empty($_POST['day_id'])) {
+            if(Day::already_created($pickup_date)) {
+                echo 'Le jour existe déjà...';
+                die();
+            }
             $day = [
                 "quota" => htmlspecialchars($_POST['quota']),
                 "reservation_opening_date" => $opening_date,
