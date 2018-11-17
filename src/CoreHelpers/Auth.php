@@ -195,9 +195,9 @@ class Auth{
         return $role['name'];
     }
 
-    public static function has_admin_rights($fundation_id, $getPayutcClient) {
-        $payutc_admin = $getPayutcClient('ADMINRIGHT');
+    public static function has_payicam_rights($fundation_id, $getPayutcClient, $service) {
         try {
+            $payutc_admin = $getPayutcClient($service);
             $admin_fundations = $payutc_admin->getFundations();
             $admin_fundation_ids = array_column($admin_fundations, 'fun_id');
             return in_array($fundation_id, $admin_fundation_ids);
