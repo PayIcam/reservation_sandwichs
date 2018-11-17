@@ -104,8 +104,8 @@ class Reservation {
             "items" => json_encode(array(array($article_id, 1))),
             "fun_id" => $_CONFIG['cafet_fun_id'],
             "mail" => $_SESSION['icam_informations']->mail,
-            "return_url" => $_CONFIG['public_url']."callback", // En fait ça passe pq shotgun regarde lui mm si le status de la transaction est tjs à W si elle n'a pas été mise à jour
-            "callback_url" => $_CONFIG['public_url']."callback" // N'est même pas utilisé pour le moment ...
+            "return_url" => $_CONFIG['public_url']."callback.php", // En fait ça passe pq shotgun regarde lui mm si le status de la transaction est tjs à W si elle n'a pas été mise à jour
+            "callback_url" => $_CONFIG['public_url']."callback.php" // N'est même pas utilisé pour le moment ...
         ));
     }
 
