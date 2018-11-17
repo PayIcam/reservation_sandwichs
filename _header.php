@@ -45,11 +45,19 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
         $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
         $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'processing/toggle_pickup.php']);
 
+
         try {
             $has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
-            $has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
         } catch(JsonClient\JsonException $e) {
             if($is_in_cafet_page) {
+                header('Location: '.$_CONFIG['public_url']);
+                die();
+            }
+        }
+        try {
+            $has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
+        } catch(JsonClient\JsonException $e) {
+            if($is_in_cafet_admin_page) {
                 header('Location: '.$_CONFIG['public_url']);
                 die();
             }
