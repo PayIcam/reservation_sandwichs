@@ -27,6 +27,10 @@ if(!empty($_POST)) {
             ];
             $day_id = Day::insert($day, json_decode($_POST['sandwiches']));
         } else {
+            if(Day::already_created($pickup_date, $day_id)) {
+                echo 'Le jour existe déjà...';
+                die();
+            }
             $day_id = htmlspecialchars($_POST['day_id']);
             $day = [
                 "day_id" => $day_id,
