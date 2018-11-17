@@ -80,12 +80,12 @@ class Day {
         return strtotime($day['reservation_closure_date']) - time() > 0 ;
     }
 
-    public static function already_created($pickup_date, $reservation_id=false) {
+    public static function already_created($pickup_date, $day_id=false) {
         global $db;
-        if($reservation_id===false) {
+        if($day_id===false) {
             return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date))['already_created'];
         } else {
-            return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days where reservation_id != :reservation_id) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date, 'reservation_id' => $reservation_id))['already_created'];
+            return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days where day_id != :day_id) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['already_created'];
         }
     }
 

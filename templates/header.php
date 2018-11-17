@@ -26,6 +26,7 @@
                     <?php if($has_cafet_rights) { ?>
                     <li class="nav-item"><a class="nav-link" href="<?=$_CONFIG['public_url']?>">Accueil</a></li>
                     <!-- <li class="nav-item"><a  class="nav-link" href="about.php">À propos</a> </li> -->
+                    <?php if($has_cafet_admin_rights) { ?>
                     <li class="nav-item dropdown" >
                         <a  class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administration</a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -34,7 +35,9 @@
                             <a  class="dropdown-item" href="edit_day.php">Ajouter un jour</a>
                         </div>
                     </li>
-                    <?php } ?>
+                    <?php } else { ?>
+                    <li class="nav-item"><a class="nav-link" href="admin_homepage.php">Administration</a></li>
+                    <?php }} ?>
                 </ul>
 
                 <ul class="nav navbar-nav my-2 my-lg-0">

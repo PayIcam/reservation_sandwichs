@@ -32,8 +32,6 @@ $logoutUrl = $_CONFIG['cas_url']."logout?service=".urlencode($_CONFIG['public_ur
 
 $icam_informations = null;
 
-$has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
-$has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
 
 if(!in_array($route, ['login.php', 'callback.php'])) {
 
@@ -42,9 +40,20 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
         header('Location:'.$casUrl, true, 303); die();
     }
     if (!empty($status->user)) {
-
+        $has_cafet_admin_rights = false;
+        $has_cafet_rights = false;
         $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
         $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'processing/toggle_pickup.php']);
+
+        try {
+            $has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
+            $has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
+        } catch(JsonClient\JsonException $e) {
+            if($is_in_cafet_page) {
+                header('Location: '.$_CONFIG['public_url']);
+                die();
+            }
+        }
 
         if(!$has_cafet_admin_rights) {
             if($is_in_cafet_admin_page) {
