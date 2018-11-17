@@ -32,6 +32,9 @@ $logoutUrl = $_CONFIG['cas_url']."logout?service=".urlencode($_CONFIG['public_ur
 
 $icam_informations = null;
 
+$has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
+$has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
+
 if(!in_array($route, ['login.php', 'callback.php'])) {
 
     if((!isset($status) || !$status->user))// Il n'était pas encore connecté en tant qu'icam.
@@ -39,29 +42,22 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
         header('Location:'.$casUrl, true, 303); die();
     }
     if (!empty($status->user)) {
-        try {
-            $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
-            $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'processing/toggle_pickup.php']);
-            $has_cafet_admin_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'ADMINRIGHT');
-            $has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
 
-            if(!$has_cafet_admin_rights) {
-                if($is_in_cafet_admin_page) {
-                    header('Location: '.$_CONFIG['public_url']);
-                    die();
-                } elseif(!$has_cafet_rights) {
-                    if($is_in_cafet_page) {
-                        header('Location: '.$_CONFIG['public_url']);
-                        die();
-                    }
-                }
-            }
-        } catch(JsonClient\JsonException $e) {
-            if($is_in_cafet_page) {
+        $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
+        $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'processing/toggle_pickup.php']);
+
+        if(!$has_cafet_admin_rights) {
+            if($is_in_cafet_admin_page) {
                 header('Location: '.$_CONFIG['public_url']);
                 die();
+            } elseif(!$has_cafet_rights) {
+                if($is_in_cafet_page) {
+                    header('Location: '.$_CONFIG['public_url']);
+                    die();
+                }
             }
         }
+
         if (empty($status->application) || isset($status->application->app_url) && strpos($status->application->app_url, 'bar_trader') === false)// il était connecté en tant qu'icam mais l'appli non
         {
             try {
