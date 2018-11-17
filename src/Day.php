@@ -29,7 +29,7 @@ class Day {
         $days = $days->fetchAll();
 
         foreach($days as &$day) {
-            $sandwiches = $db->query('SELECT dhs.quota, dhs.sandwich_id, s.name, SUM(CASE WHEN r.status IN ("V" , "W") THEN 1 ELSE 0 END) current_quota FROM day_has_sandwiches dhs LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id LEFT JOIN reservations r ON r.sandwich_id = dhs.sandwich_id WHERE dhs.is_removed=0 and dhs.day_id=:day_id GROUP BY dhs.quota, dhs.sandwich_id, s.name', array("day_id" => $day['day_id']));
+            $sandwiches = $db->query('SELECT dhs.quota, dhs.sandwich_id, s.name, s.description, SUM(CASE WHEN r.status IN ("V" , "W") THEN 1 ELSE 0 END) current_quota FROM day_has_sandwiches dhs LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id LEFT JOIN reservations r ON r.sandwich_id = dhs.sandwich_id WHERE dhs.is_removed=0 and dhs.day_id=:day_id GROUP BY dhs.quota, dhs.sandwich_id, s.sandwich_id', array("day_id" => $day['day_id']));
             $reservation = $db->queryFirst('SELECT * FROM reservations WHERE day_id=:day_id and email=:email and status != "A"', array("day_id" => $day['day_id'], "email" => $_SESSION['icam_informations']->mail));
 
             $day['sandwiches'] = $sandwiches;
@@ -118,11 +118,11 @@ class Day {
                 <a href="<?=$day['reservation']['payicam_transaction_url']?>" type="button" class="btn btn-primary">
                     Payer la réservation
                 </button>
-                <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
+                <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>&status=W" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
             <?php } elseif(!self::closure_is_passed($day)) { ?>
-                <button data-reservation_id="<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
+                <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>&status=V" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
             <?php } else { ?>
-                <button type="button" class="btn btn-danger button_disabled" disabled title='Trop tard pour annuler'>Annuler la réservation</button>
+                <button class="btn btn-danger button_disabled" disabled title='Trop tard pour annuler'>Annuler la réservation</button>
             <?php }
         }
     }
@@ -144,7 +144,12 @@ class Day {
                                 <tr class="text-center">
                                     <th width="30%" scope="col">Sandwichs disponibles</th>
                                     <?php foreach($possibilities as $possibility) { ?>
-                                        <th scope="col"><?=$possibility['name']?></th>
+                                        <th scope="col"><?php
+                                            echo $possibility['name'];
+                                            if(!empty($possibility['description'])) {
+                                                echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $possibility['description'] . '"><span class="oi oi-question-mark"></span></button>';
+                                            } ?>
+                                        </th>
                                     <?php } ?>
                                 </tr>
                             </thead>

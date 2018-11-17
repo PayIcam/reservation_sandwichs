@@ -12,11 +12,11 @@ if(!empty($_POST)) {
         ];
 
         Config::update($config);
-        header('Location: ../admin_general_settings.php');
+        Functions::flash("Configuration mise à jour", "success", $_CONFIG['public_url'] . 'admin_general_settings.php');
     } else {
-        echo "Les bonnes données n'ont pas été transmises";
+        Functions::flash("Les bonnes données n'ont pas été transmises", "danger", $_CONFIG['public_url'] . 'admin_general_settings.php');
     }
 }
 else {
-    echo "Aucune donnée n'a été reçue";
+    Functions::flash("Rien n'a été transmis", "danger", $_CONFIG['public_url'] . 'admin_general_settings.php');
 }

@@ -48,3 +48,8 @@
         </div>
     </nav>
     <div style="margin-top:4%"></div>
+    <div class="container">
+        <?php if(isset($_SESSION['alerts'])) {
+            Functions::display_alerts(); unset($_SESSION['alerts']);
+        } ?>
+    </div>

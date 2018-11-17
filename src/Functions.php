@@ -29,4 +29,17 @@ class Functions {
             return 0;
         return round(100*$a/$b, 2);
     }
+
+    public static function flash($message, $type, $location=false) {
+        $_SESSION['alerts'][] = ['message' => $message, 'type' => $type];
+        if($location) {
+            header('Location: ' . $location);
+            die();
+        }
+    }
+    public static function display_alerts() {
+        foreach($_SESSION['alerts'] as $alert) {
+            echo '<div class="alert alert-' . $alert['type'] . ' alert-dismissible">' . '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' . $alert['message'] . '</div>';
+        }
+    }
 }

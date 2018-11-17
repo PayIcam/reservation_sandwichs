@@ -80,6 +80,13 @@ class Reservation {
         return json_encode(array('message' => 'Tout a bien fonctionné'));
     }
 
+    public function refound_cancel_reservation() {
+        global $payutcClient, $_CONFIG;
+        $obj_id = Possibility::get_article_id($this->possibility_id);
+        var_dump($payutcClient->cancel(array('fun_id' => $_CONFIG['cafet_fun_id'], 'tra_id' => $this->payicam_transaction_id, 'obj_id' => $obj_id)));
+        self::update_reservation($this->reservation_id, 'A');
+    }
+
     public function toggle() {
         if(empty($this->pickup_date)) {
             return $this->pickup_sandwich();
@@ -91,7 +98,7 @@ class Reservation {
 
     public static function make_transaction($possibility_id) {
         global $payutcClient, $_CONFIG;
-        $article_id = Possibility::get_article_id($possibility_id)['article_id'];
+        $article_id = Possibility::get_article_id($possibility_id);
 
         return $payutcClient->createTransaction(array(
             "items" => json_encode(array(array($article_id, 1))),

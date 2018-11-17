@@ -13,7 +13,7 @@ class Possibility {
 
     public static function get_article_id($possibility_id) {
         global $db;
-        return $db->queryFirst('SELECT article_id FROM purchases_possibilities WHERE possibility_id=:possibility_id', array('possibility_id' => $possibility_id));
+        return $db->queryFirst('SELECT article_id FROM purchases_possibilities WHERE possibility_id=:possibility_id', array('possibility_id' => $possibility_id))['article_id'];
     }
 }
 

@@ -10,14 +10,12 @@ if(!empty($_POST)) {
         $pickup_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['pickup_date'])->getTimestamp());
 
         if(!($opening_date < $closure_date && $closure_date < $pickup_date)) {
-            echo 'Les dates ne sont pas logiques';
-            die();
+            Functions::flash("Les dates ne sont pas logiques", "warning", $_CONFIG['public_url'] . 'edit_day.php?day_id=' . $_POST['day_id']);
         }
 
         if(empty($_POST['day_id'])) {
             if(Day::already_created($pickup_date)) {
-                echo 'Le jour existe déjà...';
-                die();
+                Functions::flash("Le jour existe déjà", "warning", $_CONFIG['public_url'] . 'edit_day.php');
             }
             $day = [
                 "quota" => htmlspecialchars($_POST['quota']),
@@ -26,14 +24,13 @@ if(!empty($_POST)) {
                 "pickup_date" => $pickup_date
             ];
             $day_id = Day::insert($day, json_decode($_POST['sandwiches']));
+            Functions::flash("Jour ajouté", "success", $_CONFIG['public_url'] . 'edit_day.php');
         } else {
             $day_id = htmlspecialchars($_POST['day_id']);
             if(Day::already_created($pickup_date, $_POST['day_id'])) {
-                echo 'Le jour existe déjà...';
-                die();
+                Functions::flash("Le jour existe déjà", "warning", $_CONFIG['public_url'] . 'edit_day.php?day_id=' . $_POST['day_id']);
             } elseif(Day::cant_change_day($pickup_date, $_POST['day_id'])) {
-                echo "Ne changez pas le jour alors qu'il y a eu des réservations";
-                die();
+                Functions::flash("Impossible de changer de jour alors que des utilisateurs ont déjà réservé", "warning", $_CONFIG['public_url'] . 'edit_day.php?day_id=' . $_POST['day_id']);
             }
             $day = [
                 "day_id" => $day_id,
@@ -43,14 +40,13 @@ if(!empty($_POST)) {
                 "pickup_date" => $pickup_date
             ];
             Day::update($day, json_decode($_POST['sandwiches']));
+            Functions::flash("Jour mis à jour", "success", $_CONFIG['public_url'] . 'admin_general_settings.php');
         }
-        header('Location: ../edit_day.php?day_id=' . $day_id);
     } else {
-        echo "Les bonnes données n'ont pas été transmises";
+        Functions::flash("Les bonnes données n'ont pas été transmises", "danger", $_CONFIG['public_url'] . 'edit_day.php');
     }
 }
 else {
-    echo "Aucune donnée n'a été reçue";
+    Functions::flash("Rien n'a été transmis", "danger", $_CONFIG['public_url'] . 'edit_day.php');
 }
 
-die();

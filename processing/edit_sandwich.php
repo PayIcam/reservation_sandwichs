@@ -15,11 +15,10 @@ if(!empty($_POST)) {
 
             try {
                 Sandwich::update($sandwich);
+                Functions::flash("Sandwich mis à jour", "success", $_CONFIG['public_url'] . 'admin_general_settings.php');
             } catch(Exception $e) {
-                echo "Il y a eu une erreur lors de l'update";
-                die();
+                Functions::flash("Il y a eu une erreur lors de l'insertion", "danger", $_CONFIG['public_url'] . 'edit_sandwich.php?sandwich_id=' . $_POST['sandwich_id']);
             }
-            header('Location: ../admin_sandwichs.php');
         }
 
         else {
@@ -32,15 +31,16 @@ if(!empty($_POST)) {
         	try {
                 Sandwich::insert($sandwich);
                 header('Location: ../admin_general_settings.php');
+                Functions::flash("Sandwich créé", "success", $_CONFIG['public_url'] . 'admin_general_settings.php');
             } catch(Exception $e) {
-                echo "Il y a eu une erreur lors de l'insertion";
+                Functions::flash("Il y a eu une erreur lors de la mise à jour", "danger", $_CONFIG['public_url'] . 'edit_sandwich.php?sandwich_id=' . $_POST['sandwich_id']);
         	}
         }
 
     } else {
-        echo "Les bonnes données n'ont pas été transmises";
+        Functions::flash("Les bonnes données n'ont pas été transmises", "danger", $_CONFIG['public_url'] . 'edit_sandwich.php');
     }
 }
 else {
-	echo "Aucune donnée n'a été reçue";
+    Functions::flash("Rien n'a été transmis", "danger", $_CONFIG['public_url'] . 'edit_sandwich.php');
 }

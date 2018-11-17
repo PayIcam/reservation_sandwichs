@@ -1,4 +1,5 @@
 <div class="container-fluid">
+    <h1 class="text-center">Prochains jours de ventes de sandwichs</h1>
     <table class="table table-hover table-bordered text-center table-sm">
         <thead>
             <tr>

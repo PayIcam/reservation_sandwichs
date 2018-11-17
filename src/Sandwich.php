@@ -74,8 +74,9 @@ class Sandwich {
             <tr class="text-center" data-sandwich_id="<?=$sandwich['sandwich_id']?>">
                 <th scope="row">
                     <?=$sandwich['name']?>
-                    <?php if(!empty($sandwich['description']))
-                        echo '<button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
+                    <?php if(!empty($sandwich['description'])) {
+                        echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>';
+                    } ?>
                 </th>
                 <?php foreach($possibilities as $possibility) { ?>
                 <td class="text-center">
@@ -88,7 +89,7 @@ class Sandwich {
                 <th scope="row">
                     <?=$sandwich['name']?>
                     <?php if(!empty($sandwich['description']))
-                        echo '<button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
+                        echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
                 </th>
                 <?php foreach($possibilities as $possibility) { ?>
                 <td class="text-center">
