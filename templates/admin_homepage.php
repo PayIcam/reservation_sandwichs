@@ -24,7 +24,7 @@
                     <?php setlocale(LC_TIME, "fr_FR"); ?>
                     <?=strftime("%A %e %B %Y", strtotime($day_stats['day']))?>
                     <a href="admin_view.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm"><span class="oi oi-eye"></span></a>
-                    <?php if($is_in_cafet_admin_page) { ?>
+                    <?php if($has_cafet_admin_rights) { ?>
                         <a href="edit_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm"><span class="oi oi-pencil"></span></a>
                     <?php } ?>
                 </th> <?php

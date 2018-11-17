@@ -76,8 +76,8 @@ class Day {
         return strtotime($day['reservation_closure_date']) - time() >0 && $day['current_quota'] < $day['quota'];
     }
 
-    public static function can_cancel_reservation($day) {
-        return strtotime($day['reservation_closure_date']) - time() > 0 ;
+    public static function closure_is_passed($day) {
+        return time() - strtotime($day['reservation_closure_date'])> 0 ;
     }
 
     public static function already_created($pickup_date, $day_id=false) {
@@ -87,6 +87,10 @@ class Day {
         } else {
             return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days where day_id != :day_id) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['already_created'];
         }
+    }
+    public static function cant_change_day($pickup_date, $day_id) {
+        global $db;
+            return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date)!=DATE(pickup_date) AND (SELECT COUNT(*) FROM reservations where day_id = :day_id and status IN("V", "W"))>0 THEN 1 ELSE 0 END cant_change FROM days WHERE day_id=:day_id', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['cant_change'];
     }
 
     protected function bind($day) {
@@ -115,7 +119,7 @@ class Day {
                     Payer la réservation
                 </button>
                 <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
-            <?php } elseif(self::can_cancel_reservation($day)) { ?>
+            <?php } elseif(!self::closure_is_passed($day)) { ?>
                 <button data-reservation_id="<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
             <?php } else { ?>
                 <button type="button" class="btn btn-danger button_disabled" disabled title='Trop tard pour annuler'>Annuler la réservation</button>

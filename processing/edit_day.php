@@ -31,6 +31,9 @@ if(!empty($_POST)) {
             if(Day::already_created($pickup_date, $_POST['day_id'])) {
                 echo 'Le jour existe déjà...';
                 die();
+            } elseif(Day::cant_change_day($pickup_date, $_POST['day_id'])) {
+                echo "Ne changez pas le jour alors qu'il y a eu des réservations";
+                die();
             }
             $day = [
                 "day_id" => $day_id,
@@ -41,7 +44,6 @@ if(!empty($_POST)) {
             ];
             Day::update($day, json_decode($_POST['sandwiches']));
         }
-
         header('Location: ../edit_day.php?day_id=' . $day_id);
     } else {
         echo "Les bonnes données n'ont pas été transmises";
