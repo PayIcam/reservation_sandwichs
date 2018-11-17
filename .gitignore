@@ -4,7 +4,7 @@ iconic/*
 iconic/font/*
 !iconic/font/css/
 iconic/font/css/*
-!iconic/font/css/open-iconic.css
+!iconic/font/css/open-iconic-bootstrap.css
 js/bootstrap/*
 vendor/
 composer.lock

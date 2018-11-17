@@ -31,7 +31,7 @@
             <?php } ?>
         </tbody>
     </table>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered text-center">
         <thead>
             <tr>
                 <th>Prénom</th>

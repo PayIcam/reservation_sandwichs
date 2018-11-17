@@ -110,7 +110,7 @@ class Day {
                 <a href="<?=$day['reservation']['payicam_transaction_url']?>" type="button" class="btn btn-primary">
                     Payer la réservation
                 </button>
-                <a href="processing/cancel_reservation?reservation_id=<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
+                <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
             <?php } elseif(self::can_cancel_reservation($day)) { ?>
                 <button data-reservation_id="<?=$day['reservation']['reservation_id']?>" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
             <?php } else { ?>
