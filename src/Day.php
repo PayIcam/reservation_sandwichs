@@ -79,6 +79,11 @@ class Day {
     public static function closure_is_passed($day) {
         return time() - strtotime($day['reservation_closure_date'])> 0 ;
     }
+    public static function closure_is_passed_reservation_id($reservation_id) {
+        global $db;
+        $closure_date = $db->queryFirst('SELECT reservation_closure_date FROM days d LEFT JOIN reservations r ON r.day_id=d.day_id WHERE reservation_id=:reservation_id', array('reservation_id' => $reservation_id))['reservation_closure_date'];
+        return time() - strtotime($closure_date)> 0 ;
+    }
 
     public static function already_created($pickup_date, $day_id=false) {
         global $db;

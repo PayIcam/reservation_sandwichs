@@ -18,6 +18,8 @@ if(isset($_GET['reservation_id'])) {
     } elseif($reservation->status=='V') {
         if($reservation->status != htmlspecialchars($_GET['status'])) {
             Functions::flash("Votre réservation a déjà été annulée", 'danger', $_CONFIG['public_url']);
+        } elseif(Day::closure_is_passed_reservation_id($reservation->reservation_id)) {
+            Functions::flash("Impossible d'annuler la réservation après la date de fin de réservation...", 'danger', $_CONFIG['public_url']);
         }
         $reservation->refound_cancel_reservation();
         Functions::flash("Votre réservation a bien été annulée, vous avez été remboursé.", 'success', $_CONFIG['public_url']);
