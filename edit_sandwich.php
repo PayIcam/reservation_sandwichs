@@ -11,5 +11,7 @@ if(!isset($_GET['sandwich_id'])) {
     require 'templates/edit_sandwich.php';
 }
 
+$title = 'Edition de sandwich';
+
 
 ?>

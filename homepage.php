@@ -17,6 +17,8 @@ foreach($days as $day) {
     }
 }
 
+$title = 'Reservation de sandwichs';
+
 require 'templates/header.php';
 require 'templates/homepage.php';
 

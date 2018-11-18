@@ -22,5 +22,7 @@ if(isset($_GET['day_id'])) {
     header('Location: admin_homepage.php');
 }
 
+$title = "Vue d'un jour";
+
 require 'templates/header.php';
 require 'templates/admin_view.php';

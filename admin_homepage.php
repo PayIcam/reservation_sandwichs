@@ -26,6 +26,8 @@ foreach($days_stats as &$day_stats) {
     usort($day_stats['sandwiches_stats'], 'sorting');
 }
 
+$title = "Accueil de l'administration";
+
 require 'templates/header.php';
 require 'templates/admin_homepage.php';
 
