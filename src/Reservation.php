@@ -67,9 +67,13 @@ class Reservation {
 
     public static function reservation_is_possible($day_id, $sandwich_id) {
         global $db;
-        $sandwich_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= dhs.quota THEN 0 ELSE 1 sandwich_is_ok FROM reservations r LEFT JOIN day_has_sandwiches dhs ON dhs.sandwich_id=r.sandwich_id and dhs.day_id=r.day_id ')['sandwich_is_ok'];
-        $day_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= d.quota THEN 0 ELSE 1 day_is_ok FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id')['day_is_ok'];
+        $sandwich_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= dhs.quota THEN 0 ELSE 1 END sandwich_is_ok FROM reservations r LEFT JOIN day_has_sandwiches dhs ON dhs.sandwich_id=r.sandwich_id and dhs.day_id=r.day_id WHERE r.day_id=:day_id and r.sandwich_id=:sandwich_id', array('day_id' => $day_id, 'sandwich_id' => $sandwich_id))['sandwich_is_ok'];
+        $day_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= d.quota THEN 0 ELSE 1 END day_is_ok FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE d.day_id=:day_id', array('day_id' => $day_id))['day_is_ok'];
         return $sandwich_is_ok && $day_is_ok;
+    }
+    public static function user_has_reservation_already($data) {
+        global $db;
+        return $db->queryFirst('SELECT CASE WHEN COUNT(*) >=1 THEN 1 ELSE 0 END already_reserved FROM reservations WHERE status IN ("V", "W") and day_id=:day_id and sandwich_id=:sandwich_id and email=:email', $data)['already_reserved'];
     }
 
     public static function insert($reservation, $manually=false) {
@@ -77,7 +81,7 @@ class Reservation {
         if($manually === false) {
             return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, status, payicam_transaction_id, payicam_transaction_url, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :promo, "W", :payicam_transaction_id, :payicam_transaction_url, :possibility_id, :day_id, :sandwich_id)', $reservation);
         } elseif($manually === true) {
-            return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, payement, status, payicam_transaction_id, payicam_transaction_url, payment_date, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :payement, :promo, "V", null, null, CURRENT_TIMESTAMP(), :possibility_id, :day_id, :sandwich_id)', $reservation);
+            return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, payement, status, payicam_transaction_id, payicam_transaction_url, payment_date, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :promo, :payement, "V", null, null, CURRENT_TIMESTAMP(), :possibility_id, :day_id, :sandwich_id)', $reservation);
         }
     }
     public static function update_reservation($reservation_id, $status) {

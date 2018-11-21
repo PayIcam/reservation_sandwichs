@@ -12,6 +12,9 @@ if(!empty($_GET) && !empty($_POST)) {
         if(!Reservation::reservation_is_possible($day_id, $sandwich_id)) {
             Functions::flash("Il n'est plus possible de faire ce choix... Rechargez la page.", "warning", $_CONFIG['public_url'].'add_reservation.php?day_id='.$day_id);
         }
+        if(Reservation::user_has_reservation_already(array('day_id' => $day_id, 'sandwich_id' => $sandwich_id, 'email' => $_SESSION['icam_informations']->mail))) {
+            Functions::flash("Il a déjà une réservation en attente ou validée. Un moment ça suffit l'alcool", "danger", $_CONFIG['public_url'].'add_reservation.php?day_id='.$day_id);
+        }
 
         $firstname = htmlspecialchars($_POST['firstname']);
         $lastname = htmlspecialchars($_POST['lastname']);

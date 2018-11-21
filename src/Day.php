@@ -133,8 +133,10 @@ class Day {
                     Payer la réservation
                 </button>
                 <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>&status=W" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
-            <?php } elseif(!self::closure_is_passed($day)) { ?>
+            <?php } elseif(!self::closure_is_passed($day) && $day['reservation']['payement'] == 'PayIcam') { ?>
                 <a href="processing/cancel_reservation.php?reservation_id=<?=$day['reservation']['reservation_id']?>&status=V" type="button" class="btn btn-danger cancel_reservation"> Annuler la réservation </button>
+            <?php } elseif($day['reservation']['payement'] != 'PayIcam') { ?>
+                <button class="btn btn-danger button_disabled" disabled title="Impossible d'annuler un sandwich ajouté à la main">Annuler la réservation</button>
             <?php } else { ?>
                 <button class="btn btn-danger button_disabled" disabled title='Trop tard pour annuler'>Annuler la réservation</button>
             <?php }
