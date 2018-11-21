@@ -19,14 +19,14 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach($choices_stats as $choice_stats) { ?>
+            <?php foreach($choices_stats as &$choice_stats) { ?>
                 <tr>
-                <?php foreach($choice_stats as $choice_stat) {
-                    $pourcentage_r = Functions::pourcentage_extended_zero_division($choice_stat['picked_ups'], $choice_stat['reservations']);?>
-                    <th><?=$choice_stat['sandwich']?></th>
-                    <td><?=$choice_stat['reservations']?></td>
-                    <td class="<?=Functions::display_percentage_style($pourcentage_r)?>"><?=$choice_stat['picked_ups'] . ' (' . $pourcentage_r . '%)'?></td>
-                <?php } ?>
+                    <th><?=$choice_stats[0]['sandwich']?></th>
+                    <?php foreach($choice_stats as &$choice_stat) {
+                        $pourcentage_r = Functions::pourcentage_extended_zero_division($choice_stat['picked_ups'], $choice_stat['reservations']);?>
+                        <td><?=$choice_stat['reservations']?></td>
+                        <td class="<?=Functions::display_percentage_style($pourcentage_r)?>"><?=$choice_stat['picked_ups'] . ' (' . $pourcentage_r . '%)'?></td>
+                    <?php } ?>
                 </tr>
             <?php } ?>
         </tbody>

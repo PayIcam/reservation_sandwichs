@@ -8,10 +8,11 @@ class Day {
     public $pickup_date;
     public $is_removed;
     public $day;
+    public $current_quota;
 
     public function __construct($day_id) {
         global $db;
-        $this->bind($db->queryFirst('SELECT *, date(pickup_date) day FROM days WHERE day_id = :day_id', array('day_id' => $day_id)));
+        $this->bind($db->queryFirst('SELECT d.*, date(d.pickup_date) day, COUNT(r.reservation_id) current_quota FROM days d LEFT JOIN reservations r ON r.day_id=d.day_id WHERE d.day_id = :day_id and r.status IN ("V", "W")', array('day_id' => $day_id)));
     }
 
     public static function get_all($days_number, $week_too=false, $removed_too=false) {
@@ -42,6 +43,10 @@ class Day {
     public function get_day_sandwiches() {
         global $db;
         return $db->query('SELECT dhs.quota, s.sandwich_id, s.name, dhs.is_removed FROM day_has_sandwiches dhs LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE day_id=:day_id UNION SELECT default_quota quota, sandwich_id, name, 1 FROM sandwiches WHERE sandwich_id NOT IN (SELECT sandwich_id FROM day_has_sandwiches WHERE day_id=:day_id)', array("day_id" => $this->day_id));
+    }
+    public function get_sandwiches_quota() {
+        global $db;
+        return $db->query("SELECT dhs.quota, s.sandwich_id, s.name, SUM(CASE WHEN r.status IN ('V', 'W') THEN 1 ELSE 0 END) current_quota FROM day_has_sandwiches dhs LEFT JOIN reservations r ON r.sandwich_id=dhs.sandwich_id LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE dhs.day_id=:day_id and dhs.is_removed=0 GROUP BY s.sandwich_id, dhs.quota", array("day_id" => $this->day_id));
     }
 
     public static function insert($day, $day_sandwiches) {
@@ -75,6 +80,9 @@ class Day {
     public static function can_book_sandwiches($day) {
         return strtotime($day['reservation_closure_date']) - time() >0 && $day['current_quota'] < $day['quota'];
     }
+    public function can_book() {
+        return strtotime($this->reservation_closure_date) - time() >0 && $this->current_quota < $this->quota;
+    }
 
     public static function closure_is_passed($day) {
         return time() - strtotime($day['reservation_closure_date'])> 0 ;
@@ -106,6 +114,7 @@ class Day {
         $this->pickup_date = date('m/d/Y h:i a', strtotime($day['pickup_date']));
         $this->is_removed = $day['is_removed'];
         $this->day = $day['day'];
+        $this->current_quota = $day['current_quota'];
     }
 
     public static function display_action_button($day, $possibilities) {

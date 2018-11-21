@@ -7,7 +7,7 @@
     <link href="css/open-iconic-bootstrap.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="js/bootstrap/bootstrap.bundle.js"></script>
+    <script src="js/libraries/bootstrap.bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"> </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <script src="js/basic.js"></script>
@@ -19,6 +19,19 @@
 
       gtag('config', 'UA-112368112-1');
     </script>
+
+    <style>
+
+    .blank {
+        margin-top:4%;
+    }
+
+    @media all and (max-width: 480px){
+    .blank{
+        margin-top:15%;
+    }
+    </style>
+}
 </head>
 <body>
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
@@ -55,7 +68,7 @@
             </div>
         </div>
     </nav>
-    <div style="margin-top:4%"></div>
+    <div class="blank"></div>
     <div class="container">
         <?php if(isset($_SESSION['alerts'])) {
             Functions::display_alerts(); unset($_SESSION['alerts']);

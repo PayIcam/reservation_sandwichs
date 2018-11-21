@@ -10,6 +10,10 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $sandwich_id = (int) $_GET['sandwich_id'];
                 $possibility_id = (int) $_GET['possibility_id'];
 
+                if(!Reservation::reservation_is_possible($day_id, $sandwich_id)) {
+                    Functions::flash("Il n'est plus possible de prendre votre place... Rechargez la page.", "warning", $_CONFIG['public_url']);
+                }
+
                 $payicam_reservation = Reservation::make_transaction($possibility_id);
 
                 $insert_array = [

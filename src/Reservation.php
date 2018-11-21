@@ -6,6 +6,7 @@ class Reservation {
     public $lastname;
     public $email;
     public $promo;
+    public $payement;
     public $status;
     public $payicam_transaction_id;
     public $payicam_transaction_url;
@@ -23,7 +24,10 @@ class Reservation {
 
     public static function get_days_stats() {
         global $db;
-        $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.* FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE status IN("V", "W") AND (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) UNION SELECT 0 reservations, 0 pendings, 0 picked_ups, date(d.pickup_date) day, d.* FROM days d LEFT JOIN reservations r ON r.day_id=d.day_id WHERE status NOT IN ("V", "W") OR status IS NULL ORDER BY day');
+        $days_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN r.pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, date(d.pickup_date) day, d.*
+            FROM days d
+            LEFT JOIN reservations r ON d.day_id=r.day_id
+            WHERE (CURDATE() <= DATE(d.pickup_date) OR (WEEK(CURDATE()) = WEEK(d.pickup_date) AND YEAR(CURDATE()) = YEAR(d.pickup_date))) GROUP BY d.day_id, date(d.pickup_date) ORDER BY day');
         foreach($days_stats as &$day_stats) {
             $sandwiches_stats = $db->query('SELECT SUM(CASE WHEN status="V" THEN 1 ELSE 0 END) reservations, SUM(CASE WHEN status="W" THEN 1 ELSE 0 END) pendings, SUM(CASE WHEN pickup_date IS NOT NULL THEN 1 ELSE 0 END) picked_ups, s.sandwich_id, CASE WHEN dhs.quota IS NOT NULL THEN dhs.quota ELSE s.default_quota END quota
                 FROM reservations r
@@ -61,9 +65,20 @@ class Reservation {
         }
     }
 
-    public static function insert($reservation) {
+    public static function reservation_is_possible($day_id, $sandwich_id) {
         global $db;
-        return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, status, payicam_transaction_id, payicam_transaction_url, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :promo, "W", :payicam_transaction_id, :payicam_transaction_url, :possibility_id, :day_id, :sandwich_id)', array("firstname" => $reservation['firstname'], "lastname" => $reservation['lastname'], "email" => $reservation['email'], "promo" => $reservation['promo'], "payicam_transaction_id" => $reservation['payicam_transaction_id'], "payicam_transaction_url" => $reservation['payicam_transaction_url'], "possibility_id" => $reservation['possibility_id'], "day_id" => $reservation['day_id'], "sandwich_id" => $reservation['sandwich_id']));
+        $sandwich_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= dhs.quota THEN 0 ELSE 1 sandwich_is_ok FROM reservations r LEFT JOIN day_has_sandwiches dhs ON dhs.sandwich_id=r.sandwich_id and dhs.day_id=r.day_id ')['sandwich_is_ok'];
+        $day_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= d.quota THEN 0 ELSE 1 day_is_ok FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id')['day_is_ok'];
+        return $sandwich_is_ok && $day_is_ok;
+    }
+
+    public static function insert($reservation, $manually=false) {
+        global $db;
+        if($manually === false) {
+            return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, status, payicam_transaction_id, payicam_transaction_url, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :promo, "W", :payicam_transaction_id, :payicam_transaction_url, :possibility_id, :day_id, :sandwich_id)', $reservation);
+        } elseif($manually === true) {
+            return $db->query('INSERT INTO reservations(firstname, lastname, email, promo, payement, status, payicam_transaction_id, payicam_transaction_url, payment_date, possibility_id, day_id, sandwich_id) VALUES (:firstname, :lastname, :email, :payement, :promo, "V", null, null, CURRENT_TIMESTAMP(), :possibility_id, :day_id, :sandwich_id)', $reservation);
+        }
     }
     public static function update_reservation($reservation_id, $status) {
         global $db;
@@ -140,6 +155,7 @@ class Reservation {
         $this->lastname = $reservation['lastname'];
         $this->email = $reservation['email'];
         $this->promo = $reservation['promo'];
+        $this->payement = $reservation['payement'];
         $this->status = $reservation['status'];
         $this->payicam_transaction_id = $reservation['payicam_transaction_id'];
         $this->payicam_transaction_url = $reservation['payicam_transaction_url'];
