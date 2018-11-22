@@ -11,10 +11,10 @@ if(!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
                 $possibility_id = (int) $_GET['possibility_id'];
 
                 if(!Reservation::reservation_is_possible($day_id, $sandwich_id)) {
-                    Functions::flash("Il n'est plus possible de prendre votre place... Rechargez la page.", "warning", $_CONFIG['public_url']);
+                    echo json_encode(array("message" => "Il n'est plus possible de prendre votre place... Rechargez la page."));
                 }
-                if(!Reservation::user_has_reservation_already(array('day_id' => $day_id, 'sandwich_id' => $sandwich_id, 'email' => $_SESSION['icam_informations']->mail))) {
-                    Functions::flash("Vous avez déjà une réservation en attente ou validée. Un moment ça suffit l'alcool", "danger", $_CONFIG['public_url']);
+                if(Reservation::user_has_reservation_already(array('day_id' => $day_id, 'sandwich_id' => $sandwich_id, 'email' => $_SESSION['icam_informations']->mail))) {
+                    echo json_encode(array("message" => "Vous avez déjà une réservation en attente ou validée. Un moment ça suffit l'alcool"));
                 }
 
                 $payicam_reservation = Reservation::make_transaction($possibility_id);
