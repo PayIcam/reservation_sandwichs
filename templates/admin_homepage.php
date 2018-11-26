@@ -26,12 +26,12 @@
                     $day_stats['current_quota'] = $day_stats['pendings'] + $day_stats['reservations']; ?>
                     <?=strftime("%A %e %B %Y", strtotime($day_stats['day']))?>
                     <a href="admin_view.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Voir les réservations"><span class="oi oi-eye"></span></a>
-                    <?php if($has_cafet_admin_rights) { ?>
-                        <a href="edit_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Editer le jour de réservations"><span class="oi oi-pencil"></span></a>
-                        <?php if(Day::can_book_sandwiches($day_stats)) { ?>
+                    <?php if(Day::can_book_sandwiches($day_stats)) { ?>
                         <a href="add_reservation.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Ajouter une réservation"><span class="oi oi-plus"></span></a>
-                        <?php }
-                    } ?>
+                    <?php }
+                    if($has_cafet_admin_rights) { ?>
+                        <a href="edit_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Editer le jour de réservations"><span class="oi oi-pencil"></span></a>
+                    <?php } ?>
                 </th> <?php
                 $pourcentage_r = Functions::pourcentage_extended_zero_division($day_stats['reservations'], $day_stats['quota']);
                 $pourcentage_p = Functions::pourcentage_extended_zero_division($day_stats['picked_ups'], $day_stats['reservations']); ?>
