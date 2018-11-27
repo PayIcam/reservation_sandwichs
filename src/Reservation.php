@@ -51,9 +51,9 @@ class Reservation {
         if($day_id !== false && $status === false) {
             return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE day_id=:day_id ORDER BY r.payment_date', array('day_id' => $day_id));
         } elseif($day_id !== false && $status !== false) {
-            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE day_id=:day_id and status=:status', array('day_id' => $day_id, 'status' => $status));
+            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE day_id=:day_id and status=:status ORDER BY r.payment_date', array('day_id' => $day_id, 'status' => $status));
         }elseif($status !== false) {
-            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE status=:status', array('status' => $status));
+            return $db->query('SELECT r.*, p.name possibility, s.name sandwich FROM reservations r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id LEFT JOIN purchases_possibilities p ON p.possibility_id=r.possibility_id WHERE status=:status ORDER BY r.payment_date', array('status' => $status));
         }
     }
 
