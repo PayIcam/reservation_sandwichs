@@ -43,7 +43,7 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
         $has_cafet_admin_rights = false;
         $has_cafet_rights = false;
         $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
-        $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'add_reservation.php', 'processing/toggle_pickup.php']);
+        $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'add_reservation.php', 'processing/toggle_pickup.php', 'processing/toggle_pickup.php', 'processing/toggle_pickup.php']);
 
 
         try {
