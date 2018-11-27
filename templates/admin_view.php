@@ -38,6 +38,7 @@
                 <th>Nom</th>
                 <th>Promo</th>
                 <th>Payement</th>
+                <th>Date de payement</th>
                 <th>Choix</th>
                 <th>Action</th>
             </tr>
@@ -49,6 +50,7 @@
                 <td><?=$reservation['lastname']?></td>
                 <td><?=$reservation['promo']?></td>
                 <td><?=$reservation['payement']?></td>
+                <td><?=$reservation['payment_date']?></td>
                 <td><?=$reservation['possibility'] . ' ' . $reservation['sandwich']?></td>
                 <td><?=Reservation::display_pickup_button($reservation)?></td>
             </tr>
