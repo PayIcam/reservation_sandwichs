@@ -1,11 +1,11 @@
 <div class="container">
     <h1 class="text-center">Réserver des sandwichs</h1>
     <div class="text-center">
-        <img class="img-fluid" src="img/menu_temporaire.jpg" alt="Menu temporaire">
+        <img class="img-fluid" src="img/menu_temporaire.jpg" alt="Menu temporaire" width="80%">
     </div>
     <h2 class="text-center">Prochains jours de réservations</h2>
     <div id="ajax_alerts"></div>
-    <table class="table table-hover table-bordered text-center table-responsive">
+    <table class="table table-hover table-bordered text-center">
         <thead>
             <tr>
                 <th>Jours</th>
