@@ -1,7 +1,7 @@
 <div class="container">
     <h1 class="text-center">Réserver des sandwichs</h1>
     <div class="text-center">
-        <img class="img-fluid" src="img/menu_temporaire.jpg" alt="Menu temporaire" width="80%">
+        <img class="img-fluid" src="img/menu_dog.jpg" alt="Menu temporaire" width="80%">
     </div>
     <h2 class="text-center">Prochains jours de réservations</h2>
     <div id="ajax_alerts"></div>
