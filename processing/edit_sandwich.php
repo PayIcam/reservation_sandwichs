@@ -10,7 +10,8 @@ if(!empty($_POST)) {
                 "sandwich_id" => htmlspecialchars($_POST['sandwich_id']),
                 "name" => htmlspecialchars($_POST['name']),
                 "default_quota" => htmlspecialchars($_POST['default_quota']),
-                "description" => htmlspecialchars($_POST['description'])
+                "description" => htmlspecialchars($_POST['description']),
+                "closure_type" => isset($_POST['closure_type']) ? 1:0
             ];
 
             try {
@@ -25,7 +26,9 @@ if(!empty($_POST)) {
             $sandwich = [
                 "name" => htmlspecialchars($_POST['name']),
                 "default_quota" => htmlspecialchars($_POST['default_quota']),
-                "description" => htmlspecialchars($_POST['description'])
+                "description" => htmlspecialchars($_POST['description']),
+                "is_special" => isset($_POST['is_special']),
+                "closure_type" => isset($_POST['closure_type'])
             ];
 
         	try {

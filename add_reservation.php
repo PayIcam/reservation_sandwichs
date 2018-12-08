@@ -4,7 +4,7 @@ require '_header.php';
 
 if(isset($_GET['day_id'])) {
     $day = new Day($_GET['day_id']);
-    if(!$day->can_book()) {
+    if(!$day->can_book(false)) {
         Functions::flash("En tout cas vous êtes très marrants", "danger", $_CONFIG['public_url'] . 'admin_homepage.php');
     }
     $sandwiches = $day->get_sandwiches_quota();

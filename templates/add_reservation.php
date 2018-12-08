@@ -39,7 +39,7 @@
                 <select class="form-control" name="sandwich_id">
                     <option disabled>Quel choix de sandwich ?</option>
                     <?php foreach($sandwiches as $sandwich) {
-                        if($sandwich['current_quota'] < $sandwich['quota']) {
+                        if($day->can_book_sandwich($sandwich)) {
                             echo '<option value="' . $sandwich['sandwich_id'] . '">' . $sandwich['name'] . '</option>';
                         }
                     } ?>
@@ -49,8 +49,15 @@
                 <label for="sel1">Type de sandwich:</label>
                 <select class="form-control" name="possibility_id">
                     <option disabled>Quel option d'achat ?</option>
-                    <?php foreach($possibilities as $possibility) {
-                        echo '<option value="' . $possibility['possibility_id'] . '">' . $possibility['name'] . '</option>';
+                    <?php foreach($possibilities['classics'] as $possibility) {
+                        if($day->can_book_possibility($possibility['closure_type'])) {
+                            echo '<option value="' . $possibility['possibility_id'] . '">' . $possibility['name'] . '</option>';
+                        }
+                    } ?>
+                    <?php if($day->can_book()) {
+                        foreach($possibilities['specials'] as $possibility) {
+                            echo '<option value="' . $possibility['possibility_id'] . '">' . $possibility['name'] . '</option>';
+                        }
                     } ?>
                 </select>
             </div>

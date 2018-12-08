@@ -14,9 +14,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="reservation_closure_date">Fermeture des réservations :</label>
+                <label for="reservation_first_closure_date">Fermeture des premières réservations :</label>
                 <div class="input-group date">
-                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_closure_date" id="reservation_closure_date" required value="<?= $day->reservation_closure_date ?? '' ?>">
+                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_first_closure_date" id="reservation_first_closure_date" required value="<?= $day->reservation_first_closure_date ?? '' ?>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reservation_second_closure_date">Fermeture des secondes réservations :</label>
+                <div class="input-group date">
+                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_second_closure_date" id="reservation_second_closure_date" required value="<?= $day->reservation_second_closure_date ?? '' ?>">
                 </div>
             </div>
             <div class="form-group">
@@ -38,9 +44,10 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($day_sandwiches as $sandwich) {?>
+                <?php foreach($day_sandwiches as $sandwich) {
+                    $special_or_classic = $sandwich['is_special'] ? 'Spécial' : 'Classique'; ?>
                     <tr class='<?=$sandwich['is_removed'] ? "deleted" : "displayed"?>' data-sandwich_id="<?=$sandwich['sandwich_id']?>">
-                        <td class="text-center"><?=$sandwich['name']?></td>
+                        <td class="text-center"><?=$sandwich['name'] . ' (' . $special_or_classic . ')'?></td>
                         <td class="text-center"><span class="quota"><?=$sandwich['quota'] ?? $sandwich['default_quota']?></span> <button type="button" class="edit_quota btn btn-primary btn-sm"><span class="oi oi-pencil"></span></button></td>
                         <td class="text-center"><button class="btn btn-<?=$sandwich['is_removed'] ? "success restore" : "danger delete"?>" type="button"><?=$sandwich['is_removed'] ? "Restaurer le sandwich" : "Supprimer le sandwich"?></button></td>
                     </tr>

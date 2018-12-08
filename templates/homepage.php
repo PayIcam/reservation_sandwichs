@@ -19,7 +19,7 @@
             <tr>
                 <th><?=strftime("%A %e %B %Y", strtotime($day['day']))?></th>
                 <td><?= !empty($day['reservation']) ? Reservation::display_reservation_name($day['reservation']['reservation_id']) : ""?></td>
-                <td><?=Day::display_action_button($day, $possibilities)?></td>
+                <td><?=Day::display_action_buttons($day, $possibilities)?></td>
             </tr>
         <?php } ?>
         </tbody>

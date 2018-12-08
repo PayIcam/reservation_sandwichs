@@ -3,13 +3,14 @@
 require '../_header.php';
 
 if(!empty($_POST)) {
-    if(isset($_POST['day_id']) && !empty($_POST['quota']) && !empty($_POST['reservation_opening_date']) && !empty($_POST['reservation_closure_date']) && !empty($_POST['pickup_date']) && !empty($_POST['sandwiches'])) {
+    if(isset($_POST['day_id']) && !empty($_POST['quota']) && !empty($_POST['reservation_opening_date']) && !empty($_POST['reservation_first_closure_date']) && !empty($_POST['reservation_second_closure_date']) && !empty($_POST['pickup_date']) && !empty($_POST['sandwiches'])) {
 
         $opening_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['reservation_opening_date'])->getTimestamp());
-        $closure_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['reservation_closure_date'])->getTimestamp());
+        $first_closure_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['reservation_first_closure_date'])->getTimestamp());
+        $second_closure_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['reservation_second_closure_date'])->getTimestamp());
         $pickup_date = date('Y-m-d H:i:s', date_create_from_format('m/d/Y h:i a', $_POST['pickup_date'])->getTimestamp());
 
-        if(!($opening_date < $closure_date && $closure_date < $pickup_date)) {
+        if(!($opening_date < $first_closure_date && $first_closure_date < $second_closure_date && $second_closure_date < $pickup_date)) {
             Functions::flash("Les dates ne sont pas logiques", "warning", $_CONFIG['public_url'] . 'edit_day.php?day_id=' . $_POST['day_id']);
         }
 
@@ -20,7 +21,8 @@ if(!empty($_POST)) {
             $day = [
                 "quota" => htmlspecialchars($_POST['quota']),
                 "reservation_opening_date" => $opening_date,
-                "reservation_closure_date" => $closure_date,
+                "reservation_first_closure_date" => $first_closure_date,
+                "reservation_second_closure_date" => $second_closure_date,
                 "pickup_date" => $pickup_date
             ];
             $day_id = Day::insert($day, json_decode($_POST['sandwiches']));
@@ -36,7 +38,8 @@ if(!empty($_POST)) {
                 "day_id" => $day_id,
                 "quota" => htmlspecialchars($_POST['quota']),
                 "reservation_opening_date" => $opening_date,
-                "reservation_closure_date" => $closure_date,
+                "reservation_first_closure_date" => $first_closure_date,
+                "reservation_second_closure_date" => $second_closure_date,
                 "pickup_date" => $pickup_date
             ];
             Day::update($day, json_decode($_POST['sandwiches']));

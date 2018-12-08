@@ -2,7 +2,11 @@ $(document).ready(function() {
     $('#reservation_opening_date').datetimepicker({
         sideBySide: true
     });
-    $('#reservation_closure_date').datetimepicker({
+    $('#reservation_first_closure_date').datetimepicker({
+        sideBySide: true,
+        useCurrent: false //Important! See issue #1075
+    });
+    $('#reservation_second_closure_date').datetimepicker({
         sideBySide: true,
         useCurrent: false //Important! See issue #1075
     });
@@ -12,10 +16,14 @@ $(document).ready(function() {
     });
 
     $("#reservation_opening_date").on("dp.change", function (e) {
-        $('#reservation_closure_date').data("DateTimePicker").minDate(e.date);
+        $('#reservation_first_closure_date').data("DateTimePicker").minDate(e.date);
     });
-    $("#reservation_closure_date").on("dp.change", function (e) {
+    $("#reservation_first_closure_date").on("dp.change", function (e) {
         $('#reservation_opening_date').data("DateTimePicker").maxDate(e.date);
+        $('#reservation_second_closure_date').data("DateTimePicker").minDate(e.date);
+    });
+    $("#reservation_second_closure_date").on("dp.change", function (e) {
+        $('#reservation_first_closure_date').data("DateTimePicker").maxDate(e.date);
         $('#pickup_date').data("DateTimePicker").minDate(e.date);
     });
     $("#pickup_date").on("dp.change", function (e) {

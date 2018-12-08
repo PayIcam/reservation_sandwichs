@@ -26,7 +26,7 @@
                     $day_stats['current_quota'] = $day_stats['pendings'] + $day_stats['reservations']; ?>
                     <?=strftime("%A %e %B %Y", strtotime($day_stats['day']))?>
                     <a href="admin_view.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Voir les réservations"><span class="oi oi-eye"></span></a>
-                    <?php if(Day::can_book_sandwiches($day_stats)) { ?>
+                    <?php if(Day::can_book_sandwiches($day_stats, false)) { ?>
                         <a href="add_reservation.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Ajouter une réservation"><span class="oi oi-plus"></span></a>
                     <?php }
                     if($has_cafet_admin_rights) { ?>

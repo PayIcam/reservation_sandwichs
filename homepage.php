@@ -4,8 +4,6 @@ require '_header.php';
 
 $config = new Config();
 $days = Day::get_all($config->days_displayed, false, false);
-$possibilities = Possibility::get_all();
-
 foreach($days as $day) {
     if(!empty($day['reservation'])) {
         if(Day::closure_is_passed($day) && $day['reservation']['status'] == 'W') {
@@ -14,6 +12,8 @@ foreach($days as $day) {
         }
     }
 }
+
+$possibilities = Possibility::get_all();
 
 $title = 'Reservation de sandwichs';
 

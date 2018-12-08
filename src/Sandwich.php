@@ -6,6 +6,8 @@ class Sandwich {
     public $default_quota;
     public $description;
     public $is_removed;
+    public $is_special;
+    public $closure_type;
 
     public function __construct($sandwich_id) {
         global $db;
@@ -26,11 +28,11 @@ class Sandwich {
 
     public static function insert($sandwich) {
         global $db;
-        $db->query('INSERT INTO sandwiches(name, default_quota, description) VALUES (:name, :default_quota, :description)', array("name" => $sandwich['name'], "default_quota" => $sandwich['default_quota'], "description" => $sandwich['description']));
+        $db->query('INSERT INTO sandwiches(name, default_quota, description, is_special, closure_type) VALUES (:name, :default_quota, :description, :is_special, closure_type)', $sandwich);
     }
     public static function update($sandwich) {
         global $db;
-        $db->query('UPDATE sandwiches SET name=:name, default_quota=:default_quota, description=:description WHERE sandwich_id=:sandwich_id', array("sandwich_id" => $sandwich['sandwich_id'], "name" => $sandwich['name'], "default_quota" => $sandwich['default_quota'], "description" => $sandwich['description']));
+        $db->query('UPDATE sandwiches SET name=:name, default_quota=:default_quota, description=:description, closure_type=:closure_type WHERE sandwich_id=:sandwich_id', $sandwich);
     }
 
     public function toggle() {
@@ -66,37 +68,59 @@ class Sandwich {
         $this->default_quota = $sandwich['default_quota'];
         $this->description = $sandwich['description'];
         $this->is_removed = $sandwich['is_removed'];
+        $this->is_special = $sandwich['is_special'];
+        $this->closure_type = $sandwich['closure_type'];
     }
 
-    public static function display_reservation_table_row($sandwich, $possibilities) {
+    public static function can_book_sandwich($day, $sandwich) {
         if($sandwich['current_quota'] < $sandwich['quota']) {
-            ?>
-            <tr class="text-center" data-sandwich_id="<?=$sandwich['sandwich_id']?>">
-                <th scope="row">
-                    <?=$sandwich['name']?>
-                    <?php if(!empty($sandwich['description'])) {
-                        echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>';
+            if($sandwich['closure_type']==0) {
+                return strtotime($day['reservation_second_closure_date']) - time() >0;
+            } else {
+                return strtotime($day['reservation_first_closure_date']) - time() >0;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public static function display_reservation_table_row($day, $possibilities) {
+        foreach($day['sandwiches'] as $sandwich) {
+            if(Sandwich::can_book_sandwich($day, $sandwich)) {
+                ?>
+                <tr class="text-center" data-sandwich_id="<?=$sandwich['sandwich_id']?>">
+                    <th scope="row">
+                        <?=$sandwich['name']?>
+                        <?php if(!empty($sandwich['description'])) {
+                            echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>';
+                        } ?>
+                    </th>
+                    <?php foreach($possibilities as $possibility) {
+                        if(Possibility::can_book_possibility($possibility['closure_type'], $day)) { ?>
+                            <td class="text-center">
+                                <button data-possibility_id="<?=$possibility['possibility_id']?>" class="reservation btn btn-primary"> Réserver </button>
+                            </td>
+                        <?php } else { ?>
+                            <td class="text-center">
+                                <button class="reservation btn btn-primary button_disabled" disabled title="Date de fin de réservation dépassée"> Réserver </button>
+                            </td>
+                        <?php }
                     } ?>
-                </th>
-                <?php foreach($possibilities as $possibility) { ?>
-                <td class="text-center">
-                    <button data-possibility_id="<?=$possibility['possibility_id']?>" class="reservation btn btn-primary"> Réserver </button>
-                </td>
-                <?php } ?>
-            </tr>
-        <?php } else { ?>
-            <tr class="text-center">
-                <th scope="row">
-                    <?=$sandwich['name']?>
-                    <?php if(!empty($sandwich['description']))
-                        echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
-                </th>
-                <?php foreach($possibilities as $possibility) { ?>
-                <td class="text-center">
-                    <button class="reservation btn btn-primary button_disabled" disabled title="Le quota est déjà complet :("> Réserver </button>
-                </td>
-                <?php } ?>
-            </tr> <?php
+                </tr>
+            <?php } else { ?>
+                <tr class="text-center">
+                    <th scope="row">
+                        <?=$sandwich['name']?>
+                        <?php if(!empty($sandwich['description']))
+                            echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
+                    </th>
+                    <?php foreach($possibilities as $possibility) { ?>
+                    <td class="text-center">
+                        <button class="reservation btn btn-primary button_disabled" disabled title="Le quota est déjà complet ou la date de vente est dépassée :("> Réserver </button>
+                    </td>
+                    <?php } ?>
+                </tr> <?php
+            }
         }
     }
 }
