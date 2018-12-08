@@ -154,8 +154,8 @@ class Day {
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal<?=$day['day_id']?>1">
                     Réserver un spécial
                 </button>
-                <?php self::display_modal($day, $possibilities['classics']);
-                self::display_modal($day, $possibilities['specials']);
+                <?php self::display_modal($day, $possibilities['classics'], 0);
+                self::display_modal($day, $possibilities['specials'], 1);
             } elseif(self::can_book_sandwiches($day, false)) { ?>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal<?=$day['day_id']?>0">
                     Réserver un classique
@@ -210,7 +210,7 @@ class Day {
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php Sandwich::display_reservation_table_row($day, $possibilities); ?>
+                                <?php Sandwich::display_reservation_table_row($day, $possibilities, $is_special); ?>
                             </tbody>
                         </table>
                     </div>

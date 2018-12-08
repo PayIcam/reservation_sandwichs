@@ -84,42 +84,44 @@ class Sandwich {
         }
     }
 
-    public static function display_reservation_table_row($day, $possibilities) {
+    public static function display_reservation_table_row($day, $possibilities, $is_special) {
         foreach($day['sandwiches'] as $sandwich) {
-            if(Sandwich::can_book_sandwich($day, $sandwich)) {
-                ?>
-                <tr class="text-center" data-sandwich_id="<?=$sandwich['sandwich_id']?>">
-                    <th scope="row">
-                        <?=$sandwich['name']?>
-                        <?php if(!empty($sandwich['description'])) {
-                            echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>';
+            if($sandwich['is_special'] == $is_special) {
+                if(Sandwich::can_book_sandwich($day, $sandwich)) {
+                    ?>
+                    <tr class="text-center" data-sandwich_id="<?=$sandwich['sandwich_id']?>">
+                        <th scope="row">
+                            <?=$sandwich['name']?>
+                            <?php if(!empty($sandwich['description'])) {
+                                echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>';
+                            } ?>
+                        </th>
+                        <?php foreach($possibilities as $possibility) {
+                            if(Possibility::can_book_possibility($possibility['closure_type'], $day)) { ?>
+                                <td class="text-center">
+                                    <button data-possibility_id="<?=$possibility['possibility_id']?>" class="reservation btn btn-primary"> Réserver </button>
+                                </td>
+                            <?php } else { ?>
+                                <td class="text-center">
+                                    <button class="reservation btn btn-primary button_disabled" disabled title="Date de fin de réservation dépassée"> Réserver </button>
+                                </td>
+                            <?php }
                         } ?>
-                    </th>
-                    <?php foreach($possibilities as $possibility) {
-                        if(Possibility::can_book_possibility($possibility['closure_type'], $day)) { ?>
-                            <td class="text-center">
-                                <button data-possibility_id="<?=$possibility['possibility_id']?>" class="reservation btn btn-primary"> Réserver </button>
-                            </td>
-                        <?php } else { ?>
-                            <td class="text-center">
-                                <button class="reservation btn btn-primary button_disabled" disabled title="Date de fin de réservation dépassée"> Réserver </button>
-                            </td>
-                        <?php }
-                    } ?>
-                </tr>
-            <?php } else { ?>
-                <tr class="text-center">
-                    <th scope="row">
-                        <?=$sandwich['name']?>
-                        <?php if(!empty($sandwich['description']))
-                            echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
-                    </th>
-                    <?php foreach($possibilities as $possibility) { ?>
-                    <td class="text-center">
-                        <button class="reservation btn btn-primary button_disabled" disabled title="Le quota est déjà complet ou la date de vente est dépassée :("> Réserver </button>
-                    </td>
-                    <?php } ?>
-                </tr> <?php
+                    </tr>
+                <?php } else { ?>
+                    <tr class="text-center">
+                        <th scope="row">
+                            <?=$sandwich['name']?>
+                            <?php if(!empty($sandwich['description']))
+                                echo ' <button type="button" class="btn btn-sm" data-toggle="popover" data-content="' . $sandwich['description'] . '"><span class="oi oi-question-mark"></span></button>'; ?>
+                        </th>
+                        <?php foreach($possibilities as $possibility) { ?>
+                        <td class="text-center">
+                            <button class="reservation btn btn-primary button_disabled" disabled title="Le quota est déjà complet ou la date de vente est dépassée :("> Réserver </button>
+                        </td>
+                        <?php } ?>
+                    </tr> <?php
+                }
             }
         }
     }
