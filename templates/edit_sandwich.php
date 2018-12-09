@@ -14,10 +14,6 @@
             <label for="description">Description du sandwich :</label>
             <textarea class="form-control" name="description" id="description" rows="1"><?= $sandwichh->description ?? '' ?></textarea>
         </div>
-		<div class="form-group">
-			<label for="description">Description du sandwich :</label>
-			<textarea class="form-control" name="description" id="description" rows="1"><?= $sandwichh->description ?? '' ?></textarea>
-		</div>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" name="is_special" value="1" id="is_special" <?= isset($sandwichh->is_special) ? $sandwichh->is_special==1 ? 'checked disabled' : 'disabled' : ''  ?>>
             <label class="form-check-label" for="is_special">Sandwich spécial</label>

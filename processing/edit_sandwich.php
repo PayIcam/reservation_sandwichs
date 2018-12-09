@@ -27,13 +27,12 @@ if(!empty($_POST)) {
                 "name" => htmlspecialchars($_POST['name']),
                 "default_quota" => htmlspecialchars($_POST['default_quota']),
                 "description" => htmlspecialchars($_POST['description']),
-                "is_special" => isset($_POST['is_special']),
-                "closure_type" => isset($_POST['closure_type'])
+                "is_special" => isset($_POST['is_special']) ? 1:0,
+                "closure_type" => isset($_POST['closure_type']) ? 1:0
             ];
 
         	try {
                 Sandwich::insert($sandwich);
-                header('Location: ../admin_general_settings.php');
                 Functions::flash("Sandwich créé", "success", $_CONFIG['public_url'] . 'admin_general_settings.php');
             } catch(Exception $e) {
                 Functions::flash("Il y a eu une erreur lors de la mise à jour", "danger", $_CONFIG['public_url'] . 'edit_sandwich.php?sandwich_id=' . $_POST['sandwich_id']);

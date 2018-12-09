@@ -28,7 +28,7 @@ class Sandwich {
 
     public static function insert($sandwich) {
         global $db;
-        $db->query('INSERT INTO sandwiches(name, default_quota, description, is_special, closure_type) VALUES (:name, :default_quota, :description, :is_special, closure_type)', $sandwich);
+        $db->query('INSERT INTO sandwiches(name, default_quota, description, is_special, closure_type) VALUES (:name, :default_quota, :description, :is_special, :closure_type)', $sandwich);
     }
     public static function update($sandwich) {
         global $db;
