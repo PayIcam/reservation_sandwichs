@@ -48,7 +48,6 @@ $(document).ready(function() {
         $(this).off('click').click(restore);
     }
     function restore() {
-        console.log('ah');
         $(this).removeClass('btn-success').removeClass('restore').addClass('btn-danger').addClass('delete').text('Supprimer le sandwich').parents('tr').removeClass('deleted').addClass('displayed');
         $(this).off('click').click(delete_sandwich);
     }

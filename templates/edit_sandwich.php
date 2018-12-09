@@ -15,11 +15,11 @@
             <textarea class="form-control" name="description" id="description" rows="1"><?= $sandwichh->description ?? '' ?></textarea>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="is_special" value="1" id="is_special" <?= isset($sandwichh->is_special) ? $sandwichh->is_special==1 ? 'checked disabled' : 'disabled' : ''  ?>>
+            <input class="form-check-input" type="checkbox" name="is_special" value="1" id="is_special" <?= $is_special_input ?? '' ?>>
             <label class="form-check-label" for="is_special">Sandwich spécial</label>
         </div>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="closure_type" value="1" id="closure_type" <?= isset($sandwichh->is_special) ? $sandwichh->is_special==1 ? 'disabled' : '' : ''  ?><?= isset($sandwichh->closure_type) ? $sandwichh->closure_type==1 ? 'checked' : '' : ''  ?>>
+            <input class="form-check-input" type="checkbox" name="closure_type" value="1" id="closure_type" <?= $closure_type_input ?? '' ?>>
             <label class="form-check-label" for="closure_type">Finit plus tôt</label>
         </div>
         <br>
