@@ -68,7 +68,7 @@ class Reservation {
     public static function reservation_is_possible($day_id, $sandwich_id) {
         global $db;
         $sandwich_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= dhs.quota THEN 0 ELSE 1 END sandwich_is_ok FROM reservations r LEFT JOIN day_has_sandwiches dhs ON dhs.sandwich_id=r.sandwich_id and dhs.day_id=r.day_id WHERE r.day_id=:day_id and r.sandwich_id=:sandwich_id and status IN ("V", "W")', array('day_id' => $day_id, 'sandwich_id' => $sandwich_id))['sandwich_is_ok'];
-        $day_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= d.quota THEN 0 ELSE 1 END day_is_ok FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE d.day_id=:day_id' and status IN ("V", "W"), array('day_id' => $day_id))['day_is_ok'];
+        $day_is_ok = $db->queryFirst('SELECT CASE WHEN COUNT(*) >= d.quota THEN 0 ELSE 1 END day_is_ok FROM reservations r LEFT JOIN days d ON d.day_id=r.day_id WHERE d.day_id=:day_id and status IN ("V", "W")', array('day_id' => $day_id))['day_is_ok'];
         return $sandwich_is_ok && $day_is_ok;
     }
     public static function user_has_reservation_already($data) {
