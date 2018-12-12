@@ -50,8 +50,11 @@ class Day {
         return $db->query("SELECT dhs.quota, s.sandwich_id, s.name, s.closure_type, s.is_special, SUM(CASE WHEN r.status IN ('V', 'W') THEN 1 ELSE 0 END) current_quota FROM day_has_sandwiches dhs LEFT JOIN reservations r ON r.sandwich_id=dhs.sandwich_id and r.day_id=dhs.day_id LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE dhs.day_id=:day_id and dhs.is_removed=0 GROUP BY s.sandwich_id, dhs.quota", array("day_id" => $this->day_id));
     }
     public static function get_sandwich_day_stats($ids) {
+        $demi_ids_query = str_repeat ('?, ',  count ($ids['demi_ids']) - 1) . '?';
+        $data = array_merge($ids['demi_ids'], $ids['demi_ids']);
+        array_push($data, $ids['day_id']*1);
         global $db;
-        return $db->query("SELECT s.name, SUM(CASE WHEN r.possibility_id IN (:demi_ids) THEN 1 ELSE 0 END) demis, SUM(CASE WHEN r.possibility_id NOT IN (:demi_ids) THEN 1 ELSE 0 END) baguettes FROM `reservations` r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id WHERE day_id=:day_id and status ='V' GROUP BY s.sandwich_id", $ids);
+        return $db->query("SELECT s.name, SUM(CASE WHEN r.possibility_id IN ($demi_ids_query) THEN 1 ELSE 0 END) demis, SUM(CASE WHEN r.possibility_id NOT IN ($demi_ids_query) THEN 1 ELSE 0 END) baguettes FROM `reservations` r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id WHERE day_id=? and status ='V' GROUP BY s.sandwich_id", $data);
     }
 
     public static function insert($day, $day_sandwiches) {

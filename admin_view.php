@@ -11,7 +11,7 @@ function sorting_possibilities($a, $b){
 
 if(isset($_GET['day_id'])) {
     $day = new Day($_GET['day_id']);
-    $sandwiches_stats = Day::get_sandwich_day_stats(array('day_id' => $_GET['day_id'], 'demi_ids' => implode(',', $_CONFIG['demi_purchase_ids'])));
+    $sandwiches_stats = Day::get_sandwich_day_stats(array('day_id' => $_GET['day_id'], 'demi_ids' => $_CONFIG['demi_purchase_ids']));
     $reservations = Reservation::get_all($_GET['day_id'], 'V');
 } else {
     Functions::Flash("Le jour n'est pas spécifié", "danger", "admin_homepage.php");
