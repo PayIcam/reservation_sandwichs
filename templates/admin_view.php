@@ -6,29 +6,19 @@
     <table class="table table-hover table-bordered text-center">
         <thead>
             <tr>
-                <th rowspan="2">Sandwichs</th>
-                <?php foreach($possibilities as $possibility) { ?>
-                    <th colspan="2"><?=$possibility?></th>
-                <?php } ?>
-            </tr>
-            <tr>
-                <?php foreach($possibilities as $possibility) { ?>
-                    <th>Commandes</th>
-                    <th>Récupérés</th>
-                <?php } ?>
+                <th>Sandwichs</th>
+                <th>Demis</th>
+                <th>Baguettes</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach($choices_stats as &$choice_stats) { ?>
-                <tr>
-                    <th><?=$choice_stats[0]['sandwich']?></th>
-                    <?php foreach($choice_stats as &$choice_stat) {
-                        $pourcentage_r = Functions::pourcentage_extended_zero_division($choice_stat['picked_ups'], $choice_stat['reservations']);?>
-                        <td><?=$choice_stat['reservations']?></td>
-                        <td class="<?=Functions::display_percentage_style($pourcentage_r)?>"><?=$choice_stat['picked_ups'] . ' (' . $pourcentage_r . '%)'?></td>
-                    <?php } ?>
-                </tr>
-            <?php } ?>
+        <?php foreach($sandwiches_stats as $sandwich_stats) { ?>
+            <tr>
+                <th><?=$sandwich_stats['name']?></th>
+                <td><?=$sandwich_stats['demis']?></td>
+                <td><?=$sandwich_stats['baguettes']?></td>
+            </tr>
+        <?php } ?>
         </tbody>
     </table>
     <table class="table table-hover table-bordered text-center">

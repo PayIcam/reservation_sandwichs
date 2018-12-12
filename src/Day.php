@@ -49,6 +49,10 @@ class Day {
         global $db;
         return $db->query("SELECT dhs.quota, s.sandwich_id, s.name, s.closure_type, s.is_special, SUM(CASE WHEN r.status IN ('V', 'W') THEN 1 ELSE 0 END) current_quota FROM day_has_sandwiches dhs LEFT JOIN reservations r ON r.sandwich_id=dhs.sandwich_id and r.day_id=dhs.day_id LEFT JOIN sandwiches s ON s.sandwich_id = dhs.sandwich_id WHERE dhs.day_id=:day_id and dhs.is_removed=0 GROUP BY s.sandwich_id, dhs.quota", array("day_id" => $this->day_id));
     }
+    public static function get_sandwich_day_stats($ids) {
+        global $db;
+        return $db->query("SELECT s.name, SUM(CASE WHEN r.possibility_id IN (:demi_ids) THEN 1 ELSE 0 END) demis, SUM(CASE WHEN r.possibility_id NOT IN (:demi_ids) THEN 1 ELSE 0 END) baguettes FROM `reservations` r LEFT JOIN sandwiches s ON s.sandwich_id=r.sandwich_id WHERE day_id=:day_id and status ='V' GROUP BY s.sandwich_id", $ids);
+    }
 
     public static function insert($day, $day_sandwiches) {
         global $db;
@@ -131,6 +135,38 @@ class Day {
     public static function cant_change_day($pickup_date, $day_id) {
         global $db;
             return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date)!=DATE(pickup_date) AND (SELECT COUNT(*) FROM reservations where day_id = :day_id and status IN("V", "W"))>0 THEN 1 ELSE 0 END cant_change FROM days WHERE day_id=:day_id', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['cant_change'];
+    }
+
+    public function export_reservations_csv($day_id, $fields=['firstname','lastname','email','promo','payement','status','reservation_date','payment_date','pickup_date','possibility','sandwich']) {
+        $reservations = Reservation::get_all($this->day_id, 'V');
+        header("Content-type: text/csv");
+        header("Content-Disposition: attachment; filename=".$this->day.".csv");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        echo 'Compteur,';
+        foreach($reservations[0] as $key => $value) {
+            if(in_array($key, $fields)) {
+                echo $key . ',';
+            }
+        }
+        echo "\n";
+
+        $i=1;
+        foreach($reservations as $reservation) {
+            echo $i . ",";
+            foreach($reservation as $key => $value) {
+                if(in_array($key, $fields)) {
+                    if($value === null) {
+                        echo ' ';
+                    }
+                    echo $value . ',';
+                }
+            }
+            echo "\n";
+            $i++;
+        }
+        exit();
     }
 
     protected function bind($day) {

@@ -18,5 +18,6 @@ return [
     'cas_url' => '',
     'public_url' => 'http://localhost/www_dev_payicam/html/reservation_sandwichs/',
     'base_path' => '/www_dev_payicam/html/reservation_sandwichs/',
-    'cafet_fun_id' => ''
+    'cafet_fun_id' => '',
+    'demi_purchase_ids' => []
 ];
