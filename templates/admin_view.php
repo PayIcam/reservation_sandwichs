@@ -2,7 +2,7 @@
 
 <div class="container">
     <div id="ajax_alerts"></div>
-    <h1 class="text-center"><?=strftime("%A %e %B %Y", strtotime($day->day))?></h1>
+    <h1 class="text-center"><?=strftime("%A %e %B %Y", strtotime($day->day))?> <a href="export_day.php?day_id=<?=$_GET['day_id']?>"><button type="button" class="btn btn-primary btn-sm"><span class="oi oi-data-transfer-download"></span></button></a></h1>
     <table class="table table-hover table-bordered text-center">
         <thead>
             <tr>
@@ -24,6 +24,7 @@
     <table class="table table-hover table-bordered text-center">
         <thead>
             <tr>
+                <th>Compteur</th>
                 <th>Prénom</th>
                 <th>Nom</th>
                 <th>Promo</th>
@@ -34,8 +35,9 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach($reservations as $reservation) { ?>
+            <?php $i=1; foreach($reservations as $reservation) { ?>
             <tr>
+                <td><?=$i?></td>
                 <td><?=$reservation['firstname']?></td>
                 <td><?=$reservation['lastname']?></td>
                 <td><?=$reservation['promo']?></td>
@@ -44,7 +46,7 @@
                 <td><?=$reservation['possibility'] . ' ' . $reservation['sandwich']?></td>
                 <td><?=Reservation::display_pickup_button($reservation)?></td>
             </tr>
-            <?php } ?>
+            <?php $i++; } ?>
         </tbody>
     </table>
 </div>
