@@ -102,7 +102,7 @@ class Reservation {
     public function refound_cancel_reservation() {
         global $payutcClient, $_CONFIG;
         $obj_id = Possibility::get_article_id($this->possibility_id);
-        var_dump($payutcClient->cancel(array('fun_id' => $_CONFIG['cafet_fun_id'], 'tra_id' => $this->payicam_transaction_id, 'obj_id' => $obj_id)));
+        $payutcClient->cancel(array('fun_id' => $_CONFIG['cafet_fun_id'], 'tra_id' => $this->payicam_transaction_id, 'obj_id' => $obj_id));
         self::update_reservation($this->reservation_id, 'A');
     }
 

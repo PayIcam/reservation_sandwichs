@@ -11,6 +11,5 @@ if(isset($_GET['day_id'])) {
     $title = 'Ajout de jour de réservations';
 }
 
-
 require 'templates/header.php';
 require 'templates/edit_day.php';
