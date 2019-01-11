@@ -10,19 +10,19 @@
             <div class="form-group">
                 <label for="reservation_opening_date">Ouverture des réservations :</label>
                 <div class="input-group date">
-                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_opening_date" id="reservation_opening_date" required value="<?= $day->reservation_opening_date ?? '' ?>">
+                    <input autotocomplete='off' placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_opening_date" id="reservation_opening_date" required value="<?= $day->reservation_opening_date ?? '' ?>">
                 </div>
             </div>
             <div class="form-group">
                 <label for="reservation_first_closure_date">Fermeture des premières réservations :</label>
                 <div class="input-group date">
-                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_first_closure_date" id="reservation_first_closure_date" required value="<?= $day->reservation_first_closure_date ?? '' ?>">
+                    <input autotocomplete='off' placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_first_closure_date" id="reservation_first_closure_date" required value="<?= $day->reservation_first_closure_date ?? '' ?>">
                 </div>
             </div>
             <div class="form-group">
                 <label for="reservation_second_closure_date">Fermeture des secondes réservations :</label>
                 <div class="input-group date">
-                    <input placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_second_closure_date" id="reservation_second_closure_date" required value="<?= $day->reservation_second_closure_date ?? '' ?>">
+                    <input autotocomplete='off' placeholder="jj/mm/aaaa --:--" type="text" class="form-control" name="reservation_second_closure_date" id="reservation_second_closure_date" required value="<?= $day->reservation_second_closure_date ?? '' ?>">
                 </div>
             </div>
             <div class="form-group">
