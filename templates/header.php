@@ -54,6 +54,7 @@
                             <a  class="dropdown-item" href="admin_homepage.php">Accueil de l'administration</a>
                             <a  class="dropdown-item" href="admin_general_settings.php">Editer les paramètres généraux</a>
                             <a  class="dropdown-item" href="edit_day.php">Ajouter un jour</a>
+                            <a  class="dropdown-item" href="processing/add_week_days_automatically.php">Ajouter la prochaine semaine</a>
                         </div>
                     </li>
                     <?php } else { ?>

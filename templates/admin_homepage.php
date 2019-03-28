@@ -32,6 +32,9 @@
                     if($has_cafet_admin_rights) { ?>
                         <a href="edit_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Editer le jour de réservations"><span class="oi oi-pencil"></span></a>
                         <a href="export_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Télécharger un export"><span class="oi oi-data-transfer-download"></span></a>
+                        <?php if(!Day::cant_remove_day($day_stats['day_id'])): ?> 
+                            <a href="processing/delete_day.php?day_id=<?=$day_stats['day_id']?>" role="button" class="btn btn-sm" title="Supprimer un jour" onclick='return confirm("Voulez vous vraiment supprimer le jour ?")'><span style="color: red;" class="oi oi-trash"></span></a>
+                        <?php endif; ?>
                     <?php } ?>
                 </th> <?php
                 $pourcentage_r = Functions::pourcentage_extended_zero_division($day_stats['reservations'], $day_stats['quota']);

@@ -45,7 +45,6 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
         $is_in_cafet_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php']);
         $is_in_cafet_admin_page = !in_array($route, ['homepage.php', 'processing/reservation.php', 'processing/cancel_reservation.php', 'admin_homepage.php', 'admin_view.php', 'add_reservation.php', 'processing/toggle_pickup.php', 'processing/toggle_pickup.php', 'processing/toggle_pickup.php', 'processing/add_reservation.php', 'processing/autocomplete.php']);
 
-
         try {
             $has_cafet_rights = \CoreHelpers\Auth::has_payicam_rights($_CONFIG['cafet_fun_id'], 'getPayutcClient', 'POSS3');
         } catch(JsonClient\JsonException $e) {
@@ -94,3 +93,4 @@ if(!in_array($route, ['login.php', 'callback.php'])) {
 
 $db = new DB($_CONFIG['database']['sql_host'], $_CONFIG['database']['sql_db'], $_CONFIG['database']['sql_login'], $_CONFIG['database']['sql_pass']);
 
+date_default_timezone_set('Europe/Paris');

@@ -10,8 +10,12 @@
             <input type="number" class="form-control" name="default_quota" id="default_quota" required value="<?= $config->default_quota ?>">
         </div>
         <div class="form-group">
-            <label for="default_reservation_closure_time">Heure de fermeture des réservations de base</label>
-            <input type="time" class="form-control" name="default_reservation_closure_time" id="default_reservation_closure_time" value="<?= $config->default_reservation_closure_time ?>">
+            <label for="default_reservation_first_closure_time">Heure de fermeture des premières réservations de base</label>
+            <input type="time" class="form-control" name="default_reservation_first_closure_time" id="default_reservation_first_closure_time" value="<?= $config->default_reservation_first_closure_time ?>">
+        </div>
+        <div class="form-group">
+            <label for="default_reservation_second_closure_time">Heure de fermeture des deuxièmes réservations de base</label>
+            <input type="time" class="form-control" name="default_reservation_second_closure_time" id="default_reservation_second_closure_time" value="<?= $config->default_reservation_second_closure_time ?>">
         </div>
         <div class="form-group">
             <label for="default_pickup_time">Heure de récupération des sandwichs de base</label>

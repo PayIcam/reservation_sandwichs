@@ -61,7 +61,9 @@ class Day {
         global $db;
         $day_id = $db->query('INSERT INTO days(quota, reservation_opening_date, reservation_first_closure_date, reservation_second_closure_date, pickup_date) VALUES (:quota, :reservation_opening_date, :reservation_first_closure_date, :reservation_second_closure_date, :pickup_date)', $day);
         foreach($day_sandwiches as $sandwich) {
-            $db->query('INSERT INTO day_has_sandwiches(day_id, sandwich_id, quota) VALUES (:day_id, :sandwich_id, :quota)', array("day_id" => $day_id, "sandwich_id" => $sandwich->sandwich_id, "quota" => $sandwich->quota));
+            $data = array("day_id" => $day_id, "sandwich_id" => $sandwich->sandwich_id, "quota" => $sandwich->quota ?? $sandwich->default_quota);
+
+            $db->query('INSERT INTO day_has_sandwiches(day_id, sandwich_id, quota) VALUES (:day_id, :sandwich_id, :quota)', $data);
         }
         return $day_id;
     }
@@ -130,15 +132,35 @@ class Day {
     public static function already_created($pickup_date, $day_id=false) {
         global $db;
         if($day_id===false) {
-            return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date))['already_created'];
+            return $db->queryFirst('SELECT 
+                CASE 
+                    WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days) AND (SELECT is_removed FROM days WHERE DATE(pickup_date) = DATE(:pickup_date)) =1 THEN 2
+                    WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days) THEN 1
+                    ELSE 0 END already_created', 
+                array('pickup_date' => $pickup_date))['already_created'];
         } else {
             return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date) IN (SELECT DATE(pickup_date) FROM days where day_id != :day_id) THEN 1 ELSE 0 END already_created', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['already_created'];
         }
     }
     public static function cant_change_day($pickup_date, $day_id) {
         global $db;
-            return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date)!=DATE(pickup_date) AND (SELECT COUNT(*) FROM reservations where day_id = :day_id and status IN("V", "W"))>0 THEN 1 ELSE 0 END cant_change FROM days WHERE day_id=:day_id', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['cant_change'];
+        return $db->queryFirst('SELECT CASE WHEN DATE(:pickup_date)!=DATE(pickup_date) AND (SELECT COUNT(*) FROM reservations where day_id = :day_id and status IN("V", "W"))>0 THEN 1 ELSE 0 END cant_change FROM days WHERE day_id=:day_id', array('pickup_date' => $pickup_date, 'day_id' => $day_id))['cant_change'];
     }
+    public static function cant_remove_day($day_id) {
+        global $db;
+        return $db->queryFirst('SELECT CASE WHEN (SELECT COUNT(*) FROM reservations where day_id = :day_id and status IN("V", "W"))>0 THEN 1 ELSE 0 END cant_change FROM days WHERE day_id=:day_id', array('day_id' => $day_id))['cant_change'];
+    }
+
+    public static function remove_day($day_id) {
+        global $db;
+        $db->query('UPDATE days SET is_removed = 1 WHERE day_id=:day_id', array('day_id' => $day_id));
+    }
+
+    public static function restore($pickup_date) {
+        global $db;
+        $db->query('UPDATE days SET is_removed = 0 WHERE DATE(:pickup_date) = DATE(pickup_date)', array('pickup_date' => $pickup_date));
+    }
+
 
     public function export_reservations_csv($day_id, $fields=['firstname','lastname','email','promo','payement','status','reservation_date','payment_date','pickup_date','possibility','sandwich']) {
         $reservations = Reservation::get_all($this->day_id, 'V');

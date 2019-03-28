@@ -10,8 +10,12 @@ function sorting($a, $b){
     return $a['sandwich_id'] <= $b['sandwich_id'] ? -1:1;
 }
 
+foreach($days_stats as $index => &$day_stats) {
+    if($day_stats['is_removed'] == 1 and $day_stats['reservations'] == 0) {
+        unset($days_stats[$index]);
+        continue;
+    }
 
-foreach($days_stats as &$day_stats) {
     if(!empty($day_stats['sandwiches_stats'])) {
         $sandwiches_ids_stats = array_column($day_stats['sandwiches_stats'], 'sandwich_id');
         $difference_ids = array_diff($sandwiches_ids, $sandwiches_ids_stats);
